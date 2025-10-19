@@ -1,142 +1,138 @@
-# RedTeam Terminal 🛡️
+# RedTeam Terminal
 
-A cyberpunk-themed cybersecurity red team CLI tool for network reconnaissance, vulnerability assessment, password testing, and OSINT operations.
+A comprehensive cybersecurity assessment platform featuring multiple security testing modules for network, web application, wireless, and digital forensics domains.
 
-## Features
+## 🚀 Features
 
-### 🔍 Network Reconnaissance
-- Port scanning simulation
-- Service detection
-- Network discovery
-- Real-time scan results with color-coded status
+### Multi-Domain Assessment Capabilities:
+- **Network Reconnaissance**: Port scanning, host discovery, service fingerprinting, OS detection
+- **Vulnerability Assessment**: CVE checking, configuration analysis, SSL/TLS evaluation
+- **Web Application Security**: SQLi/XSS testing, subdomain enumeration, tech stack analysis
+- **OSINT Collection**: Email/user validation, WHOIS/DNS lookup, social media profiling
+- **Wireless Security**: WiFi/Bluetooth analysis, handshake capture, deauth attacks
+- **Digital Forensics**: Disk/memory analysis, timeline reconstruction, artifact hunting
 
-### 🛡️ Vulnerability Assessment
-- CVE database scanning
-- Security configuration checks
-- Severity-based reporting (Critical, High, Medium, Low)
-- Detailed vulnerability descriptions
+### Professional Security Controls:
+- Mandatory authorization verification
+- Comprehensive logging and audit trails
+- Dependency validation for assessment tools
+- Granular control over assessment scope
 
-### 🔑 Password Strength Tester
-- Real-time password analysis
-- Entropy calculation
-- Crack time estimation
-- Security requirements validation
+### Modular Architecture:
+- Extensible plugin system
+- Consistent UI/UX across all modules
+- Configurable assessment parameters
+- Integrated reporting capabilities
 
-### 🌐 OSINT Tools
-- Domain/IP/Email lookup
-- WHOIS data
-- Breach database checks
-- Social media profile discovery
-- DNS and SSL certificate analysis
+## 📋 Prerequisites
 
-## Installation
+- Python 3.8 or higher
+- Git
+- pip (Python package manager)
 
-The application is already set up with all required dependencies:
-- `rich` - Beautiful terminal UI
-- `colorama` - Cross-platform colored output
-- `pyfiglet` - ASCII art banners
-- `requests` - HTTP requests (for future API integrations)
+## 🛠️ Installation
 
-## Usage
+### Clone the repository
+```bash
+git clone https://github.com/your-username/redteam-terminal.git
+cd redteam-terminal
+```
 
-Run the RedTeam Terminal:
+### Install Python dependencies
+```bash
+pip install -r requirements.txt
+```
 
+### Run the application
 ```bash
 python redteam.py
 ```
 
-Or make it executable and run directly:
+## ⚠️ Important Security Notice
 
-```bash
-chmod +x redteam.py
-./redteam.py
-```
+⚠️ **CRITICAL LEGAL AND ETHICAL DISCLAIMER**
 
-## Menu Navigation
+This tool is designed strictly for:
 
-Once launched, you'll see the main menu with 5 options:
-
-1. **Network Reconnaissance** - Scan network targets and discover open ports
-2. **Vulnerability Assessment** - Run security scans and identify vulnerabilities
-3. **Password Strength Tester** - Analyze password security
-4. **OSINT Tools** - Perform open-source intelligence gathering
-5. **Exit** - Quit the terminal
-
-## Cyberpunk Aesthetics
-
-The terminal features:
-- 🎨 Cyan and magenta neon colors
-- ⚡ ASCII art banners
-- 📊 Beautiful tables and progress bars
-- 🌟 Glowing status indicators
-- 💫 Animated scanning effects
-
-## Security Note
-
-⚠️ **Educational/Training Purpose Only**
-
-This tool is designed for:
-- Security training and education
-- Penetration testing in authorized environments
+- **Authorized** security training and education
+- Penetration testing in environments where you have **explicit written permission**
 - Security awareness demonstrations
 - Learning about cybersecurity concepts
 
-**Always obtain proper authorization before conducting any security testing.**
+### ⚠️ IMPORTANT LEGAL NOTICE
 
-## Architecture
+**Using this software against systems you do not own, or without explicit written permission from the system owner, may be ILLEGAL and could violate computer fraud and abuse laws in your jurisdiction.**
+
+### 🛡️ Responsible Use Guidelines
+
+- Always obtain proper written authorization before conducting any security testing
+- Ensure you have explicit consent before using any of the tools in this suite
+- Follow responsible disclosure practices if vulnerabilities are discovered
+- Comply with all applicable local, state, federal, and international laws
+- Use this tool only in authorized environments and testing scenarios
+- Respect privacy and data protection requirements
+
+### 📋 Consent Verification
+
+This tool includes consent prompts as a reminder of the importance of authorization. However, it remains your legal and ethical responsibility to ensure you have proper authorization before using this software.
+
+**By using this software, you acknowledge that you have read and agree to the full legal disclaimer in the [LEGAL_DISCLAIMER.md](LEGAL_DISCLAIMER.md) file.**
+
+## 🔧 Usage
+
+1. **Launch**: Run `python redteam.py`
+2. **Select**: Choose from 10+ assessment categories
+3. **Configure**: Set targets and parameters
+4. **Execute**: Run automated security tests
+5. **Analyze**: Review comprehensive results
+6. **Report**: Export professional findings
+
+## 📦 File Structure
 
 ```
-redteam.py              # Main application entry point
-tools/
-  ├── network_recon.py  # Network reconnaissance module
-  ├── vuln_scanner.py   # Vulnerability assessment module
-  ├── password_tester.py # Password strength testing module
-  └── osint_tools.py    # OSINT operations module
+redteam-terminal/
+├── redteam.py                  # Main application entry point
+├── config.ini                  # Configuration file
+├── config_manager.py          # Configuration management
+├── requirements.txt           # Python dependencies
+├── LEGAL_DISCLAIMER.md        # Legal disclaimer
+├── DOCUMENTATION.md           # Comprehensive documentation
+├── PROFESSIONAL_README.md     # Professional README
+├── MARKETING_README.md        # Marketing README
+├── README.md                  # Project documentation
+├── tools/                     # Tool modules
+│   ├── __init__.py            # Package initialization
+│   ├── base_tool.py           # Abstract base class for tools
+│   ├── network_recon.py       # Network reconnaissance module
+│   ├── vuln_scanner.py        # Vulnerability assessment module
+│   ├── password_tester.py     # Password strength testing module
+│   ├── osint_tools.py         # OSINT operations module
+│   ├── dependency_manager.py  # Tool dependency checking
+│   ├── social_engineering.py  # Social engineering tools
+│   ├── forensics.py           # Forensics tools
+│   ├── reporting.py           # Reporting module
+│   └── misc_utils.py          # Miscellaneous utilities
+└── ...
 ```
 
-## Example Session
+## 🏆 Contributing
 
-```
-$ python redteam.py
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-  ____          _ _____
- |  _ \ ___  __| |_   _|__  __ _ _ __ ___
- | |_) / _ \/ _` | | |/ _ \/ _` | '_ ` _ \
- |  _ <  __/ (_| | | |  __/ (_| | | | | | |
- |_| \_\___|\__,_| |_|\___|\__,_|_| |_| |_|
+## 📜 License
 
-╔══════════════════════════════════════════════╗
-║  Terminal v2.1.0                             ║
-║  Cybersecurity Operations Platform           ║
-║  Network Recon | Vuln Assessment | OSINT     ║
-╚══════════════════════════════════════════════╝
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-     ⚡ Available Tools ⚡
-┌────┬────────────────────────────┬─────────────────────────────┐
-│ ID │ Tool                       │ Description                 │
-├────┼────────────────────────────┼─────────────────────────────┤
-│ 1  │ Network Reconnaissance     │ Port scanning and discovery │
-│ 2  │ Vulnerability Assessment   │ CVE database scanning       │
-│ 3  │ Password Strength Tester   │ Analyze password security   │
-│ 4  │ OSINT Tools               │ Intelligence gathering       │
-│ 5  │ Exit                      │ Quit the terminal           │
-└────┴────────────────────────────┴─────────────────────────────┘
+## 🤝 Support
 
-redteam@cyber ~$ _
-```
+- 📧 For questions: security@redteam-terminal.com
+- 🐙 GitHub: [github.com/your-username/redteam-terminal](https://github.com/your-username/redteam-terminal)
+- 🐦 Twitter: [@RedTeamTerminal](https://twitter.com/RedTeamTerminal)
 
-## Future Enhancements
+---
 
-Potential additions:
-- Actual network scanning capabilities
-- Real CVE database integration
-- Export reports (PDF, JSON, CSV)
-- Multi-threaded scanning
-- Custom vulnerability signatures
-- Collaborative red team features
-- Integration with real OSINT APIs
-- Historical scan comparison
-
-## License
-
-MIT License - Free for educational and authorized security testing purposes.
+*This platform is designed for authorized penetration testing and security research only. Users must ensure compliance with all applicable laws and regulations in their jurisdiction.*

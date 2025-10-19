@@ -1,0 +1,35 @@
+name: Test RedTeam Terminal
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        
+    - name: Basic import test
+      run: |
+        python -c "from redteam import main; print('Import successful')"
+        
+    - name: Test tools import
+      run: |
+        python -c "from tools.network_recon import NetworkRecon; print('Network Recon imported')"
+        python -c "from tools.vuln_scanner import VulnScanner; print('Vuln Scanner imported')"
+        python -c "from tools.osint_tools import OSINTTools; print('OSINT Tools imported')"
+        python -c "from tools.dependency_manager import DependencyManager; print('Dependency Manager imported')"
