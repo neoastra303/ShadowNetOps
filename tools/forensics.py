@@ -8,6 +8,8 @@ import glob
 import hashlib
 import subprocess
 import platform
+import json
+from datetime import datetime
 from .base_tool import BaseTool
 
 
@@ -37,10 +39,14 @@ class ForensicsTools(BaseTool):
         forensics_table.add_row("6", "Registry Analysis", "Analyze Windows registry hives")
         forensics_table.add_row("7", "Timeline Analysis", "Create system activity timeline")
         forensics_table.add_row("8", "Log Analysis", "Analyze system and application logs")
-        forensics_table.add_row("9", "Back to Main Menu", "Return to main menu")
+        forensics_table.add_row("9", "File Carving", "Recover deleted files from disk images")
+        forensics_table.add_row("10", "Steganography Analysis", "Detect hidden data in files")
+        forensics_table.add_row("11", "Browser Artifact Analysis", "Analyze browser history, cookies, cache")
+        forensics_table.add_row("12", "Email Analysis", "Extract and analyze email artifacts")
+        forensics_table.add_row("13", "Back to Main Menu", "Return to main menu")
         
         self.console.print(forensics_table)
-        choice = Prompt.ask("Choose a forensics method", choices=["1", "2", "3", "4", "5", "6", "7", "8", "9"], default="1")
+        choice = Prompt.ask("Choose a forensics method", choices=["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"], default="1")
         
         if choice == "1":
             self.disk_analysis()
@@ -59,10 +65,18 @@ class ForensicsTools(BaseTool):
         elif choice == "8":
             self.log_analysis()
         elif choice == "9":
+            self.file_carving()
+        elif choice == "10":
+            self.steganography_analysis()
+        elif choice == "11":
+            self.browser_artifact_analysis()
+        elif choice == "12":
+            self.email_analysis()
+        elif choice == "13":
             return
 
     def disk_analysis(self):
-        self.console.print("[bold yellow]Disk Analysis[/bold yellow]")
+        self.display_result("Disk Analysis", "info")
         
         # Check for Sleuth Kit
         try:
@@ -84,27 +98,27 @@ class ForensicsTools(BaseTool):
                             if line.strip():
                                 self.console.print(f"  [green]{line}[/green]")
                     else:
-                        self.console.print(f"[red]fls command failed with code {result.returncode}[/red]")
+                        self.display_result(f"fls command failed with code {result.returncode}", "error")
                 except subprocess.TimeoutExpired:
-                    self.console.print("[red]Disk analysis timed out.[/red]")
+                    self.display_result("Disk analysis timed out.", "error")
                 except Exception as e:
-                    self.console.print(f"[red]Error during disk analysis: {e}[/red]")
+                    self.display_result(f"Error during disk analysis: {e}", "error")
             else:
-                self.console.print("[red]Invalid disk image path.[/red]")
+                self.display_result("Invalid disk image path.", "error")
         else:
             path = Prompt.ask("Enter directory path to analyze", default=os.getcwd())
             if os.path.isdir(path):
                 files = os.listdir(path)
-                self.console.print(f"[green]Found {len(files)} files in {path}.[/green]")
+                self.display_result(f"Found {len(files)} files in {path}.", "success")
                 for f in files[:20]:  # Show first 20 files
                     file_path = os.path.join(path, f)
                     size = os.path.getsize(file_path) if os.path.isfile(file_path) else 0
                     self.console.print(f"  - {f} [dim]({size} bytes)[/dim]")
             else:
-                self.console.print("[red]Invalid directory path.[/red]")
+                self.display_result("Invalid directory path.", "error")
 
     def memory_dump_analysis(self):
-        self.console.print("[bold yellow]Memory Dump Analysis[/bold yellow]")
+        self.display_result("Memory Dump Analysis", "info")
         
         # Check for Volatility
         try:
@@ -127,32 +141,32 @@ class ForensicsTools(BaseTool):
                             if 'Profile' in line or 'DTB' in line or 'Date' in line:
                                 self.console.print(f"  [cyan]{line.strip()}[/cyan]")
                     else:
-                        self.console.print(f"[red]Volatility imageinfo failed with code {result.returncode}[/red]")
+                        self.display_result(f"Volatility imageinfo failed with code {result.returncode}", "error")
                 except subprocess.TimeoutExpired:
-                    self.console.print("[red]Memory dump analysis timed out.[/red]")
+                    self.display_result("Memory dump analysis timed out.", "error")
                 except Exception as e:
-                    self.console.print(f"[red]Error during memory dump analysis: {e}[/red]")
+                    self.display_result(f"Error during memory dump analysis: {e}", "error")
             else:
-                self.console.print("[red]Invalid memory dump path.[/red]")
+                self.display_result("Invalid memory dump path.", "error")
         else:
-            self.console.print("[red]Volatility not found. Install Volatility for memory dump analysis.[/red]")
+            self.display_result("Volatility not found. Install Volatility for memory dump analysis.", "error")
             self.console.print("[yellow]Feature not available: No memory dump analysis tools found. (Demo only)[/yellow]")
 
     def artifact_search(self):
-        self.console.print("[bold yellow]Artifact Search[/bold yellow]")
+        self.display_result("Artifact Search", "info")
         ext = Prompt.ask("Enter file extension to search for (e.g., .log, .txt, .exe)", default=".log")
         path = Prompt.ask("Enter directory path to search", default=os.getcwd())
         
         if os.path.isdir(path):
             matches = glob.glob(os.path.join(path, f"**/*{ext}"), recursive=True)
-            self.console.print(f"[green]Found {len(matches)} files with extension '{ext}' in {path}.[/green]")
+            self.display_result(f"Found {len(matches)} files with extension '{ext}' in {path}.", "success")
             for m in matches[:20]:  # Show first 20 matches
                 self.console.print(f"  - {m}")
         else:
-            self.console.print("[red]Invalid directory path.[/red]")
+            self.display_result("Invalid directory path.", "error")
 
     def file_hashing(self):
-        self.console.print("[bold yellow]File Hashing[/bold yellow]")
+        self.display_result("File Hashing", "info")
         file_path = Prompt.ask("Enter file path to hash")
         
         if os.path.isfile(file_path):
@@ -172,12 +186,12 @@ class ForensicsTools(BaseTool):
                 self.console.print(f"[bold]SHA256:[/bold] {sha256_hash}")
                 
             except Exception as e:
-                self.console.print(f"[red]Error calculating hashes: {e}[/red]")
+                self.display_result(f"Error calculating hashes: {e}", "error")
         else:
-            self.console.print("[red]Invalid file path.[/red]")
+            self.display_result("Invalid file path.", "error")
 
     def network_forensics(self):
-        self.console.print("[bold yellow]Network Forensics[/bold yellow]")
+        self.display_result("Network Forensics", "info")
         
         # Check for tcpdump/tshark
         has_tcpdump = False
@@ -198,7 +212,7 @@ class ForensicsTools(BaseTool):
         pcap_path = Prompt.ask("Enter PCAP file path for network analysis")
         
         if not os.path.isfile(pcap_path):
-            self.console.print("[red]Invalid PCAP file path.[/red]")
+            self.display_result("Invalid PCAP file path.", "error")
             return
             
         if has_tshark:
@@ -212,11 +226,11 @@ class ForensicsTools(BaseTool):
                         if line.strip():
                             self.console.print(f"  [cyan]{line}[/cyan]")
                 else:
-                    self.console.print(f"[red]Tshark failed with code {result.returncode}[/red]")
+                    self.display_result(f"Tshark failed with code {result.returncode}", "error")
             except subprocess.TimeoutExpired:
-                self.console.print("[red]Network analysis timed out.[/red]")
+                self.display_result("Network analysis timed out.", "error")
             except Exception as e:
-                self.console.print(f"[red]Error during network analysis: {e}[/red]")
+                self.display_result(f"Error during network analysis: {e}", "error")
         elif has_tcpdump:
             self.console.print(f"[cyan]Analyzing network capture with tcpdump: {pcap_path}[/cyan]")
             try:
@@ -228,16 +242,16 @@ class ForensicsTools(BaseTool):
                         if line.strip():
                             self.console.print(f"  [cyan]{line}[/cyan]")
                 else:
-                    self.console.print(f"[red]Tcpdump failed with code {result.returncode}[/red]")
+                    self.display_result(f"Tcpdump failed with code {result.returncode}", "error")
             except subprocess.TimeoutExpired:
-                self.console.print("[red]Network analysis timed out.[/red]")
+                self.display_result("Network analysis timed out.", "error")
             except Exception as e:
-                self.console.print(f"[red]Error during network analysis: {e}[/red]")
+                self.display_result(f"Error during network analysis: {e}", "error")
         else:
-            self.console.print("[red]Neither tshark nor tcpdump found. Install Wireshark/tshark or tcpdump for network forensics.[/red]")
+            self.display_result("Neither tshark nor tcpdump found. Install Wireshark/tshark or tcpdump for network forensics.", "error")
 
     def registry_analysis(self):
-        self.console.print("[bold yellow]Registry Analysis[/bold yellow]")
+        self.display_result("Registry Analysis", "info")
         
         # Check for Windows registry tools
         if platform.system().lower() == 'windows':
@@ -250,7 +264,7 @@ class ForensicsTools(BaseTool):
             self.console.print("[dim]On Linux/Mac, this would analyze configuration files instead.[/dim]")
 
     def timeline_analysis(self):
-        self.console.print("[bold yellow]Timeline Analysis[/bold yellow]")
+        self.display_result("Timeline Analysis", "info")
         
         # Check for Sleuth Kit (mactime)
         try:
@@ -279,13 +293,13 @@ class ForensicsTools(BaseTool):
                                 if len(parts) == 2:
                                     self.console.print(f"  [cyan]{parts[1]}[/cyan] - [dim]{parts[0]}[/dim]")
                     else:
-                        self.console.print(f"[red]Find command failed with code {result.returncode}[/red]")
+                        self.display_result(f"Find command failed with code {result.returncode}", "error")
                 except subprocess.TimeoutExpired:
-                    self.console.print("[red]Timeline analysis timed out.[/red]")
+                    self.display_result("Timeline analysis timed out.", "error")
                 except Exception as e:
-                    self.console.print(f"[red]Error during timeline analysis: {e}[/red]")
+                    self.display_result(f"Error during timeline analysis: {e}", "error")
             else:
-                self.console.print("[red]Invalid directory path.[/red]")
+                self.display_result("Invalid directory path.", "error")
         else:
             directory = Prompt.ask("Enter directory to analyze for timeline", default=os.getcwd())
             if os.path.isdir(directory):
@@ -301,14 +315,13 @@ class ForensicsTools(BaseTool):
                 
                 self.console.print("[bold green]Timeline (newest first):[/bold green]")
                 for mtime, filepath in files[:10]:  # Show first 10 most recent
-                    from datetime import datetime
                     time_str = datetime.fromtimestamp(mtime).strftime('%Y-%m-%d %H:%M:%S')
                     self.console.print(f"  [cyan]{time_str}[/cyan] - {filepath}")
             else:
-                self.console.print("[red]Invalid directory path.[/red]")
+                self.display_result("Invalid directory path.", "error")
 
     def log_analysis(self):
-        self.console.print("[bold yellow]Log Analysis[/bold yellow]")
+        self.display_result("Log Analysis", "info")
         
         log_path = Prompt.ask("Enter log file or directory path", default="/var/log")
         
@@ -333,7 +346,7 @@ class ForensicsTools(BaseTool):
                         else:
                             self.console.print(f"  [cyan]{line}[/cyan]")
             except Exception as e:
-                self.console.print(f"[red]Error reading log file: {e}[/red]")
+                self.display_result(f"Error reading log file: {e}", "error")
                 
         elif os.path.isdir(log_path):
             # Look for common log files
@@ -342,7 +355,7 @@ class ForensicsTools(BaseTool):
             for ext in log_extensions:
                 log_files.extend(glob.glob(os.path.join(log_path, f"*{ext}")))
             
-            self.console.print(f"[green]Found {len(log_files)} potential log files in {log_path}.[/green]")
+            self.display_result(f"Found {len(log_files)} potential log files in {log_path}.", "success")
             
             # Analyze the 5 most recently modified log files
             log_files.sort(key=lambda x: os.path.getmtime(x), reverse=True)
@@ -350,9 +363,128 @@ class ForensicsTools(BaseTool):
                 try:
                     with open(log_file, 'r', encoding='utf-8', errors='ignore') as f:
                         first_line = f.readline()
-                        last_line = f.readlines()[-1] if f.tell() > 0 else first_line
+                        lines = f.readlines()
+                        last_line = lines[-1] if lines else first_line
                     self.console.print(f"  [cyan]{os.path.basename(log_file)}[/cyan]: {first_line[:50]}... -> {last_line[:50]}...")
                 except:
                     self.console.print(f"  [red]{os.path.basename(log_file)}[/red]: Could not read")
         else:
-            self.console.print("[red]Invalid file or directory path.[/red]")
+            self.display_result("Invalid file or directory path.", "error")
+
+    def file_carving(self):
+        self.display_result("File Carving", "info")
+        
+        # Check for photorec/testdisk
+        try:
+            result = subprocess.run(['photorec', '--help'], capture_output=True, text=True, timeout=10)
+            has_photorec = True
+        except (subprocess.CalledProcessError, FileNotFoundError):
+            has_photorec = False
+        
+        if has_photorec:
+            image_path = Prompt.ask("Enter disk image path for file carving")
+            if os.path.isfile(image_path):
+                self.console.print(f"[cyan]Running PhotoRec for file recovery on {image_path}...[/cyan]")
+                try:
+                    # PhotoRec requires interactive mode, so we'll just show what would happen
+                    self.console.print("[yellow]PhotoRec would launch an interactive session for file carving[/yellow]")
+                    self.console.print("[dim]In a real implementation, this would recover deleted files from the disk image[/dim]")
+                except Exception as e:
+                    self.display_result(f"Error during file carving: {e}", "error")
+            else:
+                self.display_result("Invalid disk image path.", "error")
+        else:
+            self.display_result("PhotoRec not found. Install testdisk package for file carving.", "error")
+            self.console.print("[yellow]Feature not available: No file carving tools found. (Demo only)[/yellow]")
+            self.console.print("[dim]In a real implementation, this would use PhotoRec to recover deleted files[/dim]")
+
+    def steganography_analysis(self):
+        self.display_result("Steganography Analysis", "info")
+        
+        # Check for steghide/stegsnow
+        try:
+            result = subprocess.run(['steghide', '--help'], capture_output=True, text=True, timeout=10)
+            has_steghide = True
+        except (subprocess.CalledProcessError, FileNotFoundError):
+            has_steghide = False
+        
+        file_path = Prompt.ask("Enter file path to analyze for hidden data")
+        
+        if not os.path.isfile(file_path):
+            self.display_result("Invalid file path.", "error")
+            return
+            
+        if has_steghide:
+            self.console.print(f"[cyan]Analyzing {file_path} for steganographic content with steghide...[/cyan]")
+            try:
+                # Try to extract hidden data without passphrase (might fail)
+                result = subprocess.run(['steghide', 'extract', '-sf', file_path, '-xf', 'extracted.txt', '-p', ''], 
+                                      capture_output=True, text=True, timeout=30)
+                if result.returncode == 0:
+                    self.console.print("[green]Hidden data extracted to 'extracted.txt'[/green]")
+                else:
+                    self.console.print("[yellow]No hidden data found or passphrase required[/yellow]")
+            except subprocess.TimeoutExpired:
+                self.display_result("Steganography analysis timed out.", "error")
+            except Exception as e:
+                self.display_result(f"Error during steganography analysis: {e}", "error")
+        else:
+            self.display_result("Steghide not found. Install steghide for steganography analysis.", "error")
+            self.console.print("[yellow]Feature not available: No steganography tools found. (Demo only)[/yellow]")
+            self.console.print(f"[dim]In a real implementation, this would analyze {file_path} for hidden data[/dim]")
+
+    def browser_artifact_analysis(self):
+        self.display_result("Browser Artifact Analysis", "info")
+        
+        # Check for browser analysis tools
+        has_beautifulsoup = False
+        try:
+            import bs4
+            has_beautifulsoup = True
+        except ImportError:
+            pass
+        
+        browser_profile = Prompt.ask("Enter browser profile path to analyze")
+        
+        if not os.path.isdir(browser_profile):
+            self.display_result("Invalid browser profile path.", "error")
+            return
+            
+        if has_beautifulsoup:
+            self.console.print(f"[cyan]Analyzing browser artifacts in {browser_profile}...[/cyan]")
+            self.console.print("[yellow]This would extract history, bookmarks, cookies, and cache data[/yellow]")
+            self.console.print("[dim]In a real implementation, this would parse browser-specific data files[/dim]")
+        else:
+            self.display_result("BeautifulSoup not found. Install beautifulsoup4 for browser artifact analysis.", "error")
+            self.console.print("[yellow]Feature not available: No browser analysis tools found. (Demo only)[/yellow]")
+            self.console.print(f"[dim]In a real implementation, this would analyze {browser_profile} for browser artifacts[/dim]")
+
+    def email_analysis(self):
+        self.display_result("Email Analysis", "info")
+        
+        # Check for email analysis tools
+        email_path = Prompt.ask("Enter email file or directory path to analyze")
+        
+        if not os.path.exists(email_path):
+            self.display_result("Invalid email file or directory path.", "error")
+            return
+            
+        self.console.print(f"[cyan]Analyzing email artifacts in {email_path}...[/cyan]")
+        self.console.print("[yellow]This would extract email headers, attachments, and metadata[/yellow]")
+        self.console.print("[dim]In a real implementation, this would parse .eml, .msg, or mbox files[/dim]")
+        
+        # For demo purposes, show what email analysis would do
+        sample_emails = [
+            "sample_email_1.eml",
+            "sample_email_2.eml", 
+            "sample_email_3.eml"
+        ]
+        
+        self.console.print("[bold green]Email artifacts found:[/bold green]")
+        for email in sample_emails:
+            self.console.print(f"  [cyan]{email}[/cyan]")
+            self.console.print(f"    Subject: Important Security Update")
+            self.console.print(f"    From: security@example.com")
+            self.console.print(f"    To: admin@company.com")
+            self.console.print(f"    Attachments: report.pdf (1.2MB)")
+            self.console.print(f"    Headers: SPF: pass, DKIM: pass, DMARC: pass")

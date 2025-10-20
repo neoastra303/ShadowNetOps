@@ -27,6 +27,11 @@ from tools.reporting import ReportingModule
 from tools.misc_utils import MiscUtilities
 from tools.dependency_manager import get_dependency_manager
 
+# Import new tool modules
+from tools.malware_analysis import MalwareAnalysisTools
+from tools.reverse_engineering import ReverseEngineeringTools
+from tools.cryptography_tools import CryptographyTools
+
 colorama_init()
 console = Console()
 
@@ -43,6 +48,18 @@ class RedTeamTerminal:
         self.reporting = ReportingModule(console)
         self.misc_utils = MiscUtilities(console)
         self.dependency_manager = get_dependency_manager(console)
+        
+        # Initialize new tools
+        self.malware_analysis = MalwareAnalysisTools(console)
+        self.reverse_engineering = ReverseEngineeringTools(console)
+        self.cryptography_tools = CryptographyTools(console)
+        # Initialize new tools
+        self.malware_analysis = MalwareAnalysisTools(console)
+        self.reverse_engineering = ReverseEngineeringTools(console)
+        self.cryptography_tools = CryptographyTools(console)
+        self.malware_analysis = MalwareAnalysisTools(console)
+        self.reverse_engineering = ReverseEngineeringTools(console)
+        self.cryptography_tools = CryptographyTools(console)
 
     def display_banner(self) -> None:
         """Display cyberpunk ASCII art banner"""
@@ -62,7 +79,7 @@ class RedTeamTerminal:
 
     def display_menu(self) -> None:
         table = Table(
-            title="[bold cyan]Available Tools & Categories[/bold cyan]",
+            title="[bold cyan]⚡ Available Tools & Categories ⚡[/bold cyan]",
             show_header=True,
             header_style="bold magenta",
             border_style="cyan",
@@ -78,13 +95,13 @@ class RedTeamTerminal:
             "2", "Vulnerability Assessment", "CVE scanning, web vulnerability testing, configuration checks"
         )
         table.add_row("3", "Password Strength Tester", "Analyze password security and crack time estimation")
-        table.add_row("4", "OSINT Tools", "Email, username, domain, and social media research tools")
+        table.add_row("4", "OSINT Tools", "Email, username, domain, phone number, social media research")
         table.add_row(
             "5",
             "Social Engineering Toolkit",
             "Phishing, pretexting, credential harvesting, spear phishing campaigns"
         )
-        table.add_row("6", "Forensics", "Disk, memory, network, and log analysis tools")
+        table.add_row("6", "Forensics", "Disk, memory, network, log, steganography analysis")
         table.add_row("7", "Reporting", "Generate and export assessment reports (PDF, JSON, CSV)")
         table.add_row("8", "Miscellaneous Utilities", "Encoding/decoding, hash generation, network utilities")
         table.add_row(
@@ -95,7 +112,22 @@ class RedTeamTerminal:
             "Wireless Attack Tools",
             "WiFi scanning, WPA cracking, Bluetooth analysis, deauth attacks"
         )
-        table.add_row("11", "Exit", "Quit the terminal")
+        table.add_row(
+            "11",
+            "Malware Analysis",
+            "Static and dynamic malware analysis tools"
+        )
+        table.add_row(
+            "12",
+            "Reverse Engineering",
+            "Binary analysis, disassembly, decompilation tools"
+        )
+        table.add_row(
+            "13",
+            "Cryptography Tools",
+            "Encryption, decryption, cryptographic analysis"
+        )
+        table.add_row("14", "Exit", "Quit the terminal")
         self.console.print(table)
         self.console.print()
 
@@ -550,9 +582,13 @@ class RedTeamTerminal:
         table.add_row("6", "GPS Mapping", "Map wireless networks with GPS coordinates")
         table.add_row("7", "Deauth Attack", "Deauthenticate clients from AP")
         table.add_row("8", "Evil Twin AP", "Create rogue access point")
-        table.add_row("9", "Back", "Return to main menu")
+        table.add_row("9", "WiFi Phishing Portal", "Create captive portal for credential harvesting")
+        table.add_row("10", "PMKID Capture", "Capture PMKID for offline cracking")
+        table.add_row("11", "WPS PIN Attack", "Bruteforce WPS PINs (reaver)")
+        table.add_row("12", "WiFi Signal Jammer", "Jam WiFi signals in range")
+        table.add_row("13", "Back", "Return to main menu")
         self.console.print(table)
-        choice = Prompt.ask("Choose a wireless attack tool", choices=["1", "2", "3", "4", "5", "6", "7", "8", "9"])
+        choice = Prompt.ask("Choose a wireless attack tool", choices=["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"])
         
         if choice == "1":
             interface = Prompt.ask("Enter wireless interface (e.g., wlan0)", default="wlan0")
@@ -653,6 +689,37 @@ class RedTeamTerminal:
             self.console.print("[yellow]This would use hostapd to create a rogue AP[/yellow]")
             self.console.print("[dim]Note: This requires proper wireless card support and configuration[/dim]")
         elif choice == "9":
+            ssid = Prompt.ask("Enter SSID for phishing portal", default="Free WiFi")
+            self.console.print(f"[cyan]Creating phishing portal for '{ssid}'...[/cyan]")
+            self.console.print("[yellow]This would use fluxion or similar tools to create a captive portal")
+            self.console.print("[dim]In a real implementation, this would serve a fake login page to capture credentials")
+        elif choice == "10":
+            interface = Prompt.ask("Enter wireless interface (e.g., wlan0)", default="wlan0")
+            self.console.print(f"[cyan]Capturing PMKID on {interface}...[/cyan]")
+            self.console.print("[yellow]This would use hcxdumptool to capture PMKID for offline cracking")
+            self.console.print("[dim]PMKID capture allows for faster WPA cracking without waiting for handshakes")
+        elif choice == "11":
+            target_bssid = Prompt.ask("Enter target BSSID for WPS attack")
+            interface = Prompt.ask("Enter wireless interface (e.g., wlan0)", default="wlan0")
+            self.console.print(f"[cyan]Running WPS PIN attack on {target_bssid}...[/cyan]")
+            try:
+                result = subprocess.run(["reaver", "-i", interface, "-b", target_bssid, "-vv"], 
+                                      capture_output=True, text=True, check=True, timeout=300)
+                self.console.print(result.stdout if result.stdout else "[yellow]No output from reaver.[/yellow]")
+            except subprocess.CalledProcessError as e:
+                self.console.print(f"[red]Error running reaver: {e}[/red]")
+            except FileNotFoundError:
+                self.console.print("[red]reaver command not found. Please install reaver.[/red]")
+            except subprocess.TimeoutExpired:
+                self.console.print("[yellow]WPS attack completed (timeout reached).[/yellow]")
+            except Exception as e:
+                self.console.print(f"[red]Error running WPS attack: {e}[/red]")
+        elif choice == "12":
+            interface = Prompt.ask("Enter wireless interface (e.g., wlan0)", default="wlan0")
+            self.console.print(f"[cyan]Jamming WiFi signals on {interface}...[/cyan]")
+            self.console.print("[yellow]This would use mdk4 or similar tools to jam WiFi signals")
+            self.console.print("[red]WARNING: Signal jamming may be illegal in your jurisdiction!")
+        elif choice == "13":
             return
 
     def run(self) -> None:
@@ -661,7 +728,7 @@ class RedTeamTerminal:
             self.display_menu()
             choice = Prompt.ask(
                 "[bold cyan]redteam@cyber[/bold cyan] [bold magenta]~$[/bold magenta]",
-                choices=[str(i) for i in range(1, 12)],
+                choices=[str(i) for i in range(1, 15)],
             )
             self.console.print()
             if choice == "1":
@@ -685,6 +752,16 @@ class RedTeamTerminal:
             elif choice == "10":
                 self.wireless_attack_tools_menu()
             elif choice == "11":
+                self.malware_analysis_menu()
+            elif choice == "12":
+                self.reverse_engineering_menu()
+            elif choice == "11":
+                self.malware_analysis_menu()
+            elif choice == "12":
+                self.reverse_engineering_menu()
+            elif choice == "13":
+                self.cryptography_tools_menu()
+            elif choice == "14":
                 self.console.print(
                     "[bold cyan]Shutting down RedTeam Terminal...[/bold cyan]"
                 )
@@ -693,6 +770,223 @@ class RedTeamTerminal:
             self.console.print()
             self.console.print("[dim]─" * 80 + "[/dim]")
             self.console.print()
+    
+    def malware_analysis_menu(self) -> None:
+        """Malware analysis tools menu"""
+        table = Table(
+            title="[bold cyan]Malware Analysis Tools[/bold cyan]",
+            show_header=True,
+            header_style="bold magenta",
+            border_style="cyan",
+            box=box.ROUNDED,
+        )
+        table.add_column("ID", style="cyan", justify="center")
+        table.add_column("Tool", style="green")
+        table.add_column("Description", style="white")
+        table.add_row("1", "Static Analysis", "Analyze malware without executing (YARA, PE analysis)")
+        table.add_row("2", "Dynamic Analysis", "Analyze malware behavior in sandbox (Cuckoo, ANY.RUN)")
+        table.add_row("3", "String Extraction", "Extract strings and potential IOCs from binaries")
+        table.add_row("4", "YARA Rule Scanner", "Scan files with custom YARA rules")
+        table.add_row("5", "PE Header Analysis", "Analyze Portable Executable headers")
+        table.add_row("6", "Network Traffic Analysis", "Monitor malware network communications")
+        table.add_row("7", "Memory Dump Analysis", "Analyze malware memory artifacts")
+        table.add_row("8", "Back", "Return to main menu")
+        self.console.print(table)
+        choice = Prompt.ask("Choose a malware analysis tool", choices=["1", "2", "3", "4", "5", "6", "7", "8"])
+        
+        if choice == "1":
+            self.console.print("[cyan]Running static malware analysis...[/cyan]")
+            self.console.print("[yellow]This would use tools like YARA, PEiD, or similar static analysis tools[/yellow]")
+            self.console.print("[dim]In a real implementation, this would analyze file signatures, packers, and potential malicious patterns[/dim]")
+        elif choice == "2":
+            self.console.print("[cyan]Running dynamic malware analysis...[/cyan]")
+            self.console.print("[yellow]This would use sandbox environments like Cuckoo, ANY.RUN, or similar[/yellow]")
+            self.console.print("[dim]In a real implementation, this would execute malware in isolated environments to observe behavior[/dim]")
+        elif choice == "3":
+            file_path = Prompt.ask("Enter file path for string extraction")
+            if os.path.isfile(file_path):
+                self.console.print(f"[cyan]Extracting strings from [green]{file_path}[/green]...[/cyan]")
+                try:
+                    # Extract strings using strings command if available
+                    result = subprocess.run(["strings", file_path], capture_output=True, text=True, check=True, timeout=30)
+                    if result.returncode == 0:
+                        lines = result.stdout.split('\n')
+                        self.console.print(f"[bold green]Found {len(lines)} strings in {file_path}:[/bold green]")
+                        for line in lines[:20]:  # Show first 20 strings
+                            if len(line) > 4:  # Filter out short strings
+                                self.console.print(f"  [cyan]{line}[/cyan]")
+                    else:
+                        self.console.print(f"[red]Strings command failed with code {result.returncode}[/red]")
+                except subprocess.TimeoutExpired:
+                    self.console.print("[red]String extraction timed out.[/red]")
+                except FileNotFoundError:
+                    self.console.print("[red]strings command not found. Install binutils for string extraction.[/red]")
+                except Exception as e:
+                    self.console.print(f"[red]Error during string extraction: {e}[/red]")
+            else:
+                self.console.print("[red]Invalid file path.[/red]")
+        elif choice == "4":
+            self.console.print("[cyan]Running YARA rule scanner...[/cyan]")
+            self.console.print("[yellow]This would use YARA to scan files with custom detection rules[/yellow]")
+            self.console.print("[dim]In a real implementation, this would detect malware families, packers, and suspicious patterns[/dim]")
+        elif choice == "5":
+            file_path = Prompt.ask("Enter PE file path for header analysis")
+            if os.path.isfile(file_path):
+                self.console.print(f"[cyan]Analyzing PE headers in [green]{file_path}[/green]...[/cyan]")
+                self.console.print("[yellow]This would parse PE headers to identify compile time, sections, imports, and resources[/yellow]")
+                self.console.print("[dim]In a real implementation, this would use pefile library to analyze PE structures[/dim]")
+            else:
+                self.console.print("[red]Invalid file path.[/red]")
+        elif choice == "6":
+            self.console.print("[cyan]Monitoring network traffic for malware communications...[/cyan]")
+            self.console.print("[yellow]This would capture and analyze network traffic for C2 communications[/yellow]")
+            self.console.print("[dim]In a real implementation, this would use tools like Wireshark, tcpdump, or Zeek[/dim]")
+        elif choice == "7":
+            self.console.print("[cyan]Analyzing memory dumps for malware artifacts...[/cyan]")
+            self.console.print("[yellow]This would search memory dumps for injected code, mutexes, and network connections[/yellow]")
+            self.console.print("[dim]In a real implementation, this would use Volatility or similar memory forensic tools[/dim]")
+        elif choice == "8":
+            return
+    
+    def reverse_engineering_menu(self) -> None:
+        """Reverse engineering tools menu"""
+        table = Table(
+            title="[bold cyan]Reverse Engineering Tools[/bold cyan]",
+            show_header=True,
+            header_style="bold magenta",
+            border_style="cyan",
+            box=box.ROUNDED,
+        )
+        table.add_column("ID", style="cyan", justify="center")
+        table.add_column("Tool", style="green")
+        table.add_column("Description", style="white")
+        table.add_row("1", "Disassembler", "Disassemble binaries (IDA Pro, Ghidra, Radare2)")
+        table.add_row("2", "Debugger", "Debug executables (GDB, x64dbg, OllyDbg)")
+        table.add_row("3", "Decompiler", "Decompile binaries to source code")
+        table.add_row("4", "Binary Analysis", "Analyze binary file formats and structures")
+        table.add_row("5", "Function Recognition", "Identify standard library functions")
+        table.add_row("6", "String Decryption", "Decrypt obfuscated strings in binaries")
+        table.add_row("7", "Packer Detection", "Detect executable packers and protectors")
+        table.add_row("8", "Back", "Return to main menu")
+        self.console.print(table)
+        choice = Prompt.ask("Choose a reverse engineering tool", choices=["1", "2", "3", "4", "5", "6", "7", "8"])
+        
+        if choice == "1":
+            self.console.print("[cyan]Running disassembler...[/cyan]")
+            self.console.print("[yellow]This would use IDA Pro, Ghidra, or Radare2 to disassemble binaries[/yellow]")
+            self.console.print("[dim]In a real implementation, this would show assembly code and control flow graphs[/dim]")
+        elif choice == "2":
+            self.console.print("[cyan]Launching debugger...[/cyan]")
+            self.console.print("[yellow]This would use GDB, x64dbg, or OllyDbg to debug executables[/yellow]")
+            self.console.print("[dim]In a real implementation, this would allow step-through debugging and memory inspection[/dim]")
+        elif choice == "3":
+            self.console.print("[cyan]Running decompiler...[/cyan]")
+            self.console.print("[yellow]This would use Ghidra, IDA Pro, or similar to decompile binaries[/yellow]")
+            self.console.print("[dim]In a real implementation, this would convert machine code to pseudo-C code[/dim]")
+        elif choice == "4":
+            file_path = Prompt.ask("Enter binary file path for analysis")
+            if os.path.isfile(file_path):
+                self.console.print(f"[cyan]Analyzing binary [green]{file_path}[/green]...[/cyan]")
+                self.console.print("[yellow]This would analyze file format, architecture, and entry points[/yellow]")
+                self.console.print("[dim]In a real implementation, this would use file command or binwalk for binary analysis[/dim]")
+            else:
+                self.console.print("[red]Invalid file path.[/red]")
+        elif choice == "5":
+            self.console.print("[cyan]Running function recognition...[/cyan]")
+            self.console.print("[yellow]This would identify standard library functions in disassembled code[/yellow]")
+            self.console.print("[dim]In a real implementation, this would use FLIRT signatures or similar recognition methods[/dim]")
+        elif choice == "6":
+            self.console.print("[cyan]Decrypting obfuscated strings...[/cyan]")
+            self.console.print("[yellow]This would identify and decrypt strings obfuscated by malware[/yellow]")
+            self.console.print("[dim]In a real implementation, this would emulate decryption routines or use static analysis[/dim]")
+        elif choice == "7":
+            self.console.print("[cyan]Detecting executable packers...[/yellow]")
+            self.console.print("[yellow]This would identify packers like UPX, ASPack, or custom protectors[/yellow]")
+            self.console.print("[dim]In a real implementation, this would use PEiD signatures or similar detection methods[/dim]")
+        elif choice == "8":
+            return
+    
+    def cryptography_tools_menu(self) -> None:
+        """Cryptography tools menu"""
+        table = Table(
+            title="[bold cyan]Cryptography Tools[/bold cyan]",
+            show_header=True,
+            header_style="bold magenta",
+            border_style="cyan",
+            box=box.ROUNDED,
+        )
+        table.add_column("ID", style="cyan", justify="center")
+        table.add_column("Tool", style="green")
+        table.add_column("Description", style="white")
+        table.add_row("1", "Hash Calculator", "Calculate various hash algorithms (MD5, SHA1, SHA256)")
+        table.add_row("2", "Encryption/Decryption", "Encrypt/decrypt with various algorithms")
+        table.add_row("3", "Encoding/Decoding", "Encode/decode with Base64, Hex, URL encoding")
+        table.add_row("4", "Cryptanalysis", "Analyze cryptographic implementations for weaknesses")
+        table.add_row("5", "Certificate Analysis", "Analyze SSL/TLS certificates")
+        table.add_row("6", "Key Generation", "Generate cryptographic keys")
+        table.add_row("7", "Digital Signatures", "Create and verify digital signatures")
+        table.add_row("8", "Back", "Return to main menu")
+        self.console.print(table)
+        choice = Prompt.ask("Choose a cryptography tool", choices=["1", "2", "3", "4", "5", "6", "7", "8"])
+        
+        if choice == "1":
+            file_path = Prompt.ask("Enter file path for hash calculation")
+            if os.path.isfile(file_path):
+                self.console.print(f"[cyan]Calculating hashes for [green]{file_path}[/green]...[/cyan]")
+                
+                try:
+                    with open(file_path, 'rb') as f:
+                        data = f.read()
+                    
+                    md5_hash = hashlib.md5(data).hexdigest()
+                    sha1_hash = hashlib.sha1(data).hexdigest()
+                    sha256_hash = hashlib.sha256(data).hexdigest()
+                    
+                    self.console.print(f"[bold]MD5:[/bold]    {md5_hash}")
+                    self.console.print(f"[bold]SHA1:[/bold]   {sha1_hash}")
+                    self.console.print(f"[bold]SHA256:[/bold] {sha256_hash}")
+                    
+                except Exception as e:
+                    self.console.print(f"[red]Error calculating hashes: {e}[/red]")
+            else:
+                self.console.print("[red]Invalid file path.[/red]")
+        elif choice == "2":
+            self.console.print("[cyan]Encryption/Decryption functionality...[/cyan]")
+            self.console.print("[yellow]This would encrypt/decrypt data with AES, RSA, or other algorithms[/yellow]")
+            self.console.print("[dim]In a real implementation, this would use cryptography libraries like pycryptodome[/dim]")
+        elif choice == "3":
+            text = Prompt.ask("Enter text for encoding/decoding")
+            self.console.print(f"[cyan]Encoding/Decoding [green]{text}[/green]...[/cyan]")
+            
+            # Show various encodings
+            import base64
+            import urllib.parse
+            
+            b64_encoded = base64.b64encode(text.encode()).decode()
+            hex_encoded = text.encode().hex()
+            url_encoded = urllib.parse.quote(text)
+            
+            self.console.print(f"[bold]Base64:[/bold] {b64_encoded}")
+            self.console.print(f"[bold]Hex:[/bold]    {hex_encoded}")
+            self.console.print(f"[bold]URL:[/bold]    {url_encoded}")
+        elif choice == "4":
+            self.console.print("[cyan]Running cryptanalysis...[/cyan]")
+            self.console.print("[yellow]This would analyze cryptographic implementations for weaknesses[/yellow]")
+            self.console.print("[dim]In a real implementation, this would check for weak keys, improper padding, or protocol flaws[/dim]")
+        elif choice == "5":
+            self.console.print("[cyan]Analyzing SSL/TLS certificates...[/cyan]")
+            self.console.print("[yellow]This would check certificate validity, expiration, and security[/yellow]")
+            self.console.print("[dim]In a real implementation, this would use openssl or similar tools[/dim]")
+        elif choice == "6":
+            self.console.print("[cyan]Generating cryptographic keys...[/cyan]")
+            self.console.print("[yellow]This would generate RSA, ECC, or symmetric keys[/yellow]")
+            self.console.print("[dim]In a real implementation, this would use cryptography libraries[/dim]")
+        elif choice == "7":
+            self.console.print("[cyan]Creating digital signatures...[/cyan]")
+            self.console.print("[yellow]This would sign and verify data with digital signatures[/yellow]")
+            self.console.print("[dim]In a real implementation, this would use RSA/DSA/ECDSA signing[/dim]")
+        elif choice == "8":
+            return
 
 
 def main() -> None:
