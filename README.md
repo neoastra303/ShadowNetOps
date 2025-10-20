@@ -11,6 +11,9 @@ A comprehensive cybersecurity assessment platform featuring multiple security te
 - **OSINT Collection**: Email/user validation, WHOIS/DNS lookup, social media profiling
 - **Wireless Security**: WiFi/Bluetooth analysis, handshake capture, deauth attacks
 - **Digital Forensics**: Disk/memory analysis, timeline reconstruction, artifact hunting
+- **Malware Analysis**: Static/dynamic analysis, YARA rules, PE analysis
+- **Reverse Engineering**: Disassembly, decompilation, binary analysis
+- **Cryptography Tools**: Hash calculation, encryption/decryption, certificate analysis
 
 ### Professional Security Controls:
 - Mandatory authorization verification
@@ -110,6 +113,9 @@ redteam-terminal/
 │   ├── dependency_manager.py  # Tool dependency checking
 │   ├── social_engineering.py  # Social engineering tools
 │   ├── forensics.py           # Forensics tools
+│   ├── malware_analysis.py    # Malware analysis tools
+│   ├── reverse_engineering.py # Reverse engineering tools
+│   ├── cryptography_tools.py  # Cryptography tools
 │   ├── reporting.py           # Reporting module
 │   └── misc_utils.py          # Miscellaneous utilities
 └── ...

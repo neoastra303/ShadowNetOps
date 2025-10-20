@@ -227,3 +227,24 @@ output/
 results/
 reports/
 .scannerwork/
+
+# Python virtual environment (if using uv or pip)
+.venv/
+venv/
+env/
+
+# Python package manager lock files (uncomment as needed)
+# uv.lock
+# poetry.lock
+# Pipfile.lock
+
+# Additional node-related
+node_modules/
+package-lock.json
+yarn.lock
+
+# Build outputs
+dist/
+build/
+out/
+.DS_Store
