@@ -3,6 +3,7 @@
 import time
 import subprocess
 import os
+import re
 import hashlib
 import base64
 import urllib.parse
@@ -13,10 +14,20 @@ from rich.prompt import Prompt
 from rich import box
 from .base_tool import BaseTool
 
+try:
+    from ..config_manager import get_config_manager
+except ImportError:
+    # Fallback for when run directly
+    import sys
+    import os
+    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from config_manager import get_config_manager
+
 
 class CryptographyTools(BaseTool):
     def __init__(self, console: Console):
         super().__init__(console)
+        self.config_manager = get_config_manager()
         
     def hash_calculator(self):
         """Calculate various hash algorithms"""
@@ -27,42 +38,60 @@ class CryptographyTools(BaseTool):
         if not os.path.isfile(file_path):
             self.display_result("Invalid file path", "error")
             return
-            
-        self.console.print(f"[cyan]Calculating hashes for [green]{file_path}[/green][/cyan]")
         
-        try:
-            with open(file_path, 'rb') as f:
-                data = f.read()
+        # Check if we're in simulation mode
+        simulation_mode = self.config_manager.get_boolean('CRYPTOGRAPHY_TOOLS', 'simulation_mode', fallback=True)
+        
+        if simulation_mode:
+            self.console.print("[yellow]Running in simulation mode - showing example results[/yellow]")
+            self.console.print(f"[cyan]Simulating hash calculation for [green]{file_path}[/green][/cyan]")
             
-            # Calculate various hashes
-            hashes = {
-                'MD5': hashlib.md5(data).hexdigest(),
-                'SHA1': hashlib.sha1(data).hexdigest(),
-                'SHA256': hashlib.sha256(data).hexdigest(),
-                'SHA512': hashlib.sha512(data).hexdigest(),
-                'RIPEMD160': None
+            # Show example hashes for simulation
+            example_hashes = {
+                'MD5': '5d41402abc4b2a76b9719d911017c592',
+                'SHA1': '2aae6c35c94fcfb415dbe95f408b9ce91ee846ed',
+                'SHA256': '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
+                'SHA512': 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae31e6d1385c1e3c43a1a8d7e8a8e247e238522834e03244e5541c71b2c34b2353b'
             }
             
-            # Try to calculate RIPEMD160 if available
-            try:
-                import hashlib
-                ripemd160 = hashlib.new('ripemd160')
-                ripemd160.update(data)
-                hashes['RIPEMD160'] = ripemd160.hexdigest()
-            except ValueError:
-                # RIPEMD160 not available in this Python build
-                pass
-            
-            # Display hashes
             self.console.print("[bold green]Calculated hashes:[/bold green]")
-            for algo, hash_val in hashes.items():
-                if hash_val:
-                    self.console.print(f"  [cyan]{algo}:[/cyan] {hash_val}")
-                else:
-                    self.console.print(f"  [dim]{algo}:[/dim] [red]Not available[/red]")
-                    
-        except Exception as e:
-            self.display_result(f"Error calculating hashes: {e}", "error")
+            for algo, hash_val in example_hashes.items():
+                self.console.print(f"  [cyan]{algo}:[/cyan] {hash_val}")
+        else:
+            self.console.print(f"[cyan]Calculating hashes for [green]{file_path}[/green][/cyan]")
+            
+            try:
+                with open(file_path, 'rb') as f:
+                    data = f.read()
+                
+                # Calculate various hashes
+                hashes = {
+                    'MD5': hashlib.md5(data).hexdigest(),
+                    'SHA1': hashlib.sha1(data).hexdigest(),
+                    'SHA256': hashlib.sha256(data).hexdigest(),
+                    'SHA512': hashlib.sha512(data).hexdigest(),
+                    'RIPEMD160': None
+                }
+                
+                # Try to calculate RIPEMD160 if available
+                try:
+                    ripemd160 = hashlib.new('ripemd160')
+                    ripemd160.update(data)
+                    hashes['RIPEMD160'] = ripemd160.hexdigest()
+                except ValueError:
+                    # RIPEMD160 not available in this Python build
+                    pass
+                
+                # Display hashes
+                self.console.print("[bold green]Calculated hashes:[/bold green]")
+                for algo, hash_val in hashes.items():
+                    if hash_val:
+                        self.console.print(f"  [cyan]{algo}:[/cyan] {hash_val}")
+                    else:
+                        self.console.print(f"  [dim]{algo}:[/dim] [red]Not available[/red]")
+                        
+            except Exception as e:
+                self.display_result(f"Error calculating hashes: {e}", "error")
     
     def encryption_decryption(self):
         """Encrypt/decrypt with various algorithms"""

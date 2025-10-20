@@ -11,6 +11,14 @@ from rich.progress import Progress, BarColumn, TextColumn, SpinnerColumn
 from rich.prompt import Prompt
 from rich import box
 from .base_tool import BaseTool
+try:
+    from ..config_manager import get_config_manager
+except ImportError:
+    # Fallback for when run directly
+    import sys
+    import os
+    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from config_manager import get_config_manager
 
 
 class NetworkRecon(BaseTool):
@@ -18,24 +26,38 @@ class NetworkRecon(BaseTool):
         super().__init__(console)
         self.open_ports = []
         self.lock = threading.Lock()
+        self.config_manager = get_config_manager()
         
     def scan_port(self, target: str, port: int, timeout: float = 1.0) -> Tuple[int, str, str]:
         """Scan a single port on the target"""
-        try:
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.settimeout(timeout)
-            result = sock.connect_ex((target, port))
-            sock.close()
-            
+        # Check if we're in simulation mode
+        simulation_mode = self.config_manager.get_boolean('NETWORK_RECON', 'simulation_mode', fallback=True)
+        
+        if simulation_mode:
+            # In simulation mode, return known results for common ports
             service = self.get_common_service(port)
-            if result == 0:
+            # Simulate results - return open for some known ports, closed for others
+            if port in [22, 80, 443, 3389, 3306, 5432]:
                 return port, service, "open"
             else:
                 return port, service, "closed"
-        except socket.gaierror:
-            return port, "Unknown", "error"
-        except Exception:
-            return port, "Unknown", "filtered"
+        else:
+            # In real mode, perform actual scanning
+            try:
+                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                sock.settimeout(timeout)
+                result = sock.connect_ex((target, port))
+                sock.close()
+                
+                service = self.get_common_service(port)
+                if result == 0:
+                    return port, service, "open"
+                else:
+                    return port, service, "closed"
+            except socket.gaierror:
+                return port, "Unknown", "error"
+            except Exception:
+                return port, "Unknown", "filtered"
     
     def get_common_service(self, port: int) -> str:
         """Get common service name for a port"""
@@ -95,11 +117,19 @@ class NetworkRecon(BaseTool):
         return results
     
     def scan_ports(self, target: str) -> None:
-        """Perform actual port scanning"""
+        """Perform port scanning"""
         # Validate input to prevent command injection
         if not self.validate_input(target):
             self.display_result("Invalid target format", "error")
             return
+        
+        # Check if we're in simulation mode
+        simulation_mode = self.config_manager.get_boolean('NETWORK_RECON', 'simulation_mode', fallback=True)
+        
+        if simulation_mode:
+            self.console.print("[yellow]Running in simulation mode - showing example results[/yellow]")
+        else:
+            self.console.print("[green]Running in real mode - performing actual network scanning[/green]")
         
         # Default common ports to scan
         common_ports = [21, 22, 23, 25, 53, 80, 110, 143, 443, 445, 993, 995, 1433, 1521, 3306, 3389, 5432, 5900, 6379, 9200, 27017, 27018]
@@ -125,7 +155,8 @@ class NetworkRecon(BaseTool):
                 port_num, service, status = self.scan_port(target, port)
                 results.append((port, service, status))
                 progress.update(scan_task, advance=1)
-                time.sleep(0.01)  # Small delay to avoid overwhelming the target
+                if not simulation_mode:
+                    time.sleep(0.01)  # Small delay to avoid overwhelming the target
         
         # Alternative: Use threaded scanning for better performance
         # results = self.scan_ports_threaded(target, common_ports)
@@ -224,6 +255,23 @@ class NetworkRecon(BaseTool):
         import subprocess
         import ipaddress
         
+        # Check if we're in simulation mode
+        simulation_mode = self.config_manager.get_boolean('NETWORK_RECON', 'simulation_mode', fallback=True)
+        
+        if simulation_mode:
+            self.console.print("[yellow]Running in simulation mode - showing example results[/yellow]")
+            # In simulation mode, show example results instead of performing actual network operations
+            if '/' in target:
+                self.console.print(f"[cyan]Simulating host discovery in network: [green]{target}[/green][/cyan]")
+                self.console.print("[bold green]Found 3 live hosts:[/bold green]")
+                self.console.print("  - 192.168.1.1")
+                self.console.print("  - 192.168.1.10")
+                self.console.print("  - 192.168.1.254")
+            else:
+                self.console.print(f"[cyan]Simulating ping to target: [green]{target}[/green][/cyan]")
+                self.console.print(f"[bold green]Host {target} is alive![/bold green]")
+            return
+        
         # Validate target for network discovery
         try:
             # Check if it's a network range
@@ -241,7 +289,6 @@ class NetworkRecon(BaseTool):
                         hosts = []
                         for line in lines:
                             if 'Status: Up' in line:
-                                import re
                                 match = re.search(r'Host: (\S+)', line)
                                 if match:
                                     hosts.append(match.group(1))
@@ -283,6 +330,18 @@ class NetworkRecon(BaseTool):
     
     def banner_grabbing(self, target: str) -> None:
         """Grab service banners from open ports"""
+        # Check if we're in simulation mode
+        simulation_mode = self.config_manager.get_boolean('NETWORK_RECON', 'simulation_mode', fallback=True)
+        
+        if simulation_mode:
+            self.console.print("[yellow]Running in simulation mode - showing example results[/yellow]")
+            self.console.print(f"[cyan]Simulating banner grabbing from [green]{target}[/green][/cyan]")
+            self.console.print("[yellow]Note: This shows example banners that might be returned[/yellow]")
+            self.console.print("  [cyan]Port 22 (SSH):[/cyan] SSH-2.0-OpenSSH_8.4p1")
+            self.console.print("  [cyan]Port 80 (HTTP):[/cyan] Apache/2.4.41 (Ubuntu)")
+            self.console.print("  [cyan]Port 443 (HTTPS):[/cyan] nginx/1.18.0")
+            return
+        
         # For demo purposes, we'll show what banner grabbing would do
         self.console.print(f"[cyan]Attempting to grab banners from [green]{target}[/green][/cyan]")
         self.console.print("[yellow]Note: Actual banner grabbing requires specific service connections[/yellow]")
@@ -316,6 +375,16 @@ class NetworkRecon(BaseTool):
         """Detect operating system of target"""
         import subprocess
         
+        # Check if we're in simulation mode
+        simulation_mode = self.config_manager.get_boolean('NETWORK_RECON', 'simulation_mode', fallback=True)
+        
+        if simulation_mode:
+            self.console.print("[yellow]Running in simulation mode - showing example results[/yellow]")
+            self.console.print(f"[cyan]Simulating OS detection for [green]{target}[/green][/cyan]")
+            self.console.print("[bold green]Detected OS: Linux 5.x (Ubuntu 20.04)[/bold green]")
+            self.console.print("[green]OS Accuracy: 95%[/green]")
+            return
+        
         self.console.print(f"[cyan]Attempting OS detection for [green]{target}[/green][/cyan]")
         
         try:
@@ -326,7 +395,6 @@ class NetworkRecon(BaseTool):
                 # Look for OS detection results in nmap output
                 output = result.stdout
                 if "OS details:" in output:
-                    import re
                     os_match = re.search(r"OS details: (.+)", output)
                     if os_match:
                         os_details = os_match.group(1)
@@ -349,6 +417,19 @@ class NetworkRecon(BaseTool):
         """Trace network path to target"""
         import subprocess
         import platform
+        
+        # Check if we're in simulation mode
+        simulation_mode = self.config_manager.get_boolean('NETWORK_RECON', 'simulation_mode', fallback=True)
+        
+        if simulation_mode:
+            self.console.print("[yellow]Running in simulation mode - showing example results[/yellow]")
+            self.console.print(f"[cyan]Simulating traceroute to [green]{target}[/green][/cyan]")
+            self.console.print("[cyan]Hop 1:[/cyan] 192.168.1.1 (1.23ms)")
+            self.console.print("[cyan]Hop 2:[/cyan] 10.0.0.1 (2.45ms)")
+            self.console.print("[cyan]Hop 3:[/cyan] 172.16.0.1 (5.67ms)")
+            self.console.print("[cyan]Hop 4:[/cyan] 203.0.113.1 (12.34ms)")
+            self.console.print("[bold green]Traceroute completed with 4 hops.[/bold green]")
+            return
         
         self.console.print(f"[cyan]Tracing route to [green]{target}[/green][/cyan]")
         

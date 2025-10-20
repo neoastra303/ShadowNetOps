@@ -215,3 +215,9 @@ class ConfigManager:
 
 # Global configuration instance
 config_manager = ConfigManager()
+
+
+def get_config_manager():
+    """Get the global configuration manager instance"""
+    global config_manager
+    return config_manager

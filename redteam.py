@@ -53,13 +53,6 @@ class RedTeamTerminal:
         self.malware_analysis = MalwareAnalysisTools(console)
         self.reverse_engineering = ReverseEngineeringTools(console)
         self.cryptography_tools = CryptographyTools(console)
-        # Initialize new tools
-        self.malware_analysis = MalwareAnalysisTools(console)
-        self.reverse_engineering = ReverseEngineeringTools(console)
-        self.cryptography_tools = CryptographyTools(console)
-        self.malware_analysis = MalwareAnalysisTools(console)
-        self.reverse_engineering = ReverseEngineeringTools(console)
-        self.cryptography_tools = CryptographyTools(console)
 
     def display_banner(self) -> None:
         """Display cyberpunk ASCII art banner"""
@@ -751,10 +744,6 @@ class RedTeamTerminal:
                 self.web_attack_tools_menu()
             elif choice == "10":
                 self.wireless_attack_tools_menu()
-            elif choice == "11":
-                self.malware_analysis_menu()
-            elif choice == "12":
-                self.reverse_engineering_menu()
             elif choice == "11":
                 self.malware_analysis_menu()
             elif choice == "12":
