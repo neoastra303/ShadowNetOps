@@ -7,6 +7,8 @@ A cyberpunk-themed terminal tool for penetration testing and security operations
 import sys
 import re
 import subprocess
+import os
+import hashlib
 from typing import Optional
 from rich.console import Console
 from rich.panel import Panel
@@ -173,7 +175,6 @@ class RedTeamTerminal:
             continue_anyway = Prompt.ask("[bold magenta]Continue anyway? (yes/no)[/bold magenta]", default="no")
             if continue_anyway.lower() not in ['yes', 'y', 'true']:
                 return
-        
         table = Table(
             title="[bold cyan]OSINT Tools[/bold cyan]",
             show_header=True,
@@ -181,6 +182,7 @@ class RedTeamTerminal:
             border_style="cyan",
             box=box.ROUNDED,
         )
+
         table.add_column("ID", style="cyan", justify="center")
         table.add_column("Tool", style="green")
         table.add_column("Description", style="white")

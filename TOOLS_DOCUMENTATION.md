@@ -14,6 +14,7 @@
 11. [Malware Analysis Tools](#malware-analysis-tools)
 12. [Reverse Engineering Tools](#reverse-engineering-tools)
 13. [Cryptography Tools](#cryptography-tools)
+14. [Code Quality & Issue Fixing Tools](#code-quality--issue-fixing-tools)
 
 ## Network Reconnaissance Tools
 
@@ -429,3 +430,44 @@ The Cryptography module analyzes cryptographic implementations and performs cryp
 ---
 
 *This documentation describes the tools available in RedTeam Terminal. All tools are designed for authorized security testing and educational purposes only. Always ensure you have proper written consent before using any of these tools.*
+
+## Code Quality & Issue Fixing Tools
+
+The Code Quality & Issue Fixing module provides automated tools for identifying and fixing code issues.
+
+### Features
+- **Issue Identification**: Automatically scans the codebase for common issues
+- **Automated Fixes**: Applies fixes automatically while preserving code formatting
+- **GitHub Integration**: Creates GitHub issues for fixed problems automatically
+- **Documentation Updates**: Updates FIXED_ISSUES.md with details of fixed issues
+- **Reporting**: Creates fixed-it reports summarizing all fixes applied
+- **Safety Features**: Creates backup files before modifications and validates fixes
+
+### Tools Used
+- Python requests (for GitHub API integration)
+- Python regex (for pattern matching in code)
+- Custom issue detection algorithms
+- Backup and restore functionality
+
+### Usage
+1. Run the fix script directly:
+   - **Scan only**: `python fix_issues.py --add-command scan-only`
+   - **Fix table issues**: `python fix_issues.py --add-command fix-table`
+   - **Fix all issues**: `python fix_issues.py --add-command fix-all`
+
+2. Use the convenience scripts:
+   - **Windows**: `fix_it.bat [command] [token]`
+   - **Unix/Linux/macOS**: `./fix_it.sh [command] [token]`
+
+3. Advanced usage with GitHub integration:
+   - `python fix_issues.py --add-command fix-all --token YOUR_GITHUB_TOKEN`
+
+### Available Commands
+- `scan-only`: Identify issues without making changes
+- `fix-table`: Fix only table declaration issues
+- `fix-all`: Fix all identified issues (default)
+
+### Output Files
+- `FIXED_ISSUES.md`: Updated with details of all fixed issues
+- `fixed-it-report.txt`: Comprehensive report of fixes applied
+- `*.backup`: Backup files created before any modifications

@@ -411,6 +411,7 @@ class OSINTTools(BaseTool):
         if choice == "10":
             return
         
+        target = None
         if choice in ["1", "2", "3", "4"]:
             target = Prompt.ask(
                 "[cyan]Enter domain, IP, or target to investigate[/cyan]",
@@ -436,8 +437,6 @@ class OSINTTools(BaseTool):
                 "[cyan]Enter image URL for reverse search[/cyan]",
                 default="https://example.com/image.jpg"
             )
-        else:
-            return
         
         if not target or target.strip() == "":
             self.display_result("Invalid target", "error")
