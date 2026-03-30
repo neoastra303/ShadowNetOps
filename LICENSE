@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2025 RedTeam Terminal
+Copyright (c) 2025 neoastra303
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,18 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----
-
-IMPORTANT LEGAL NOTICE:
-
-This software is provided "as is" for authorized security testing and educational purposes only. 
-Users are solely responsible for ensuring compliance with all applicable laws and regulations 
-in their jurisdiction before using this software. 
-
-The authors and contributors disclaim all warranties and shall not be liable for any damages 
-or legal issues arising from misuse of this software. Users must obtain proper written 
-authorization before conducting any security testing against systems they do not own.
-
-This software is not intended for use in jurisdictions where security testing tools 
-are prohibited or restricted without proper licensing.
