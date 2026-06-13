@@ -1,6 +1,6 @@
-# Contributing to RedTeam Terminal
+# Contributing to ShadowNetOps
 
-Thank you for your interest in contributing to RedTeam Terminal! We welcome contributions from the community and appreciate your help in making this project better.
+Thank you for your interest in contributing to ShadowNetOps! We welcome contributions from the community and appreciate your help in making this project better.
 
 ## Code of Conduct
 
@@ -9,19 +9,22 @@ By participating in this project, you agree to abide by our [Code of Conduct](CO
 ## How Can I Contribute?
 
 ### Reporting Bugs
-- Ensure the bug has not already been reported by searching existing [issues](https://github.com/your-username/redteam-terminal/issues)
+
+- Ensure the bug has not already been reported by searching existing [issues](https://github.com/neoastra303/ShadowNetOps/issues)
 - Use a clear and descriptive title for the issue
 - Include detailed steps to reproduce the bug
 - Provide information about your environment (OS, Python version, etc.)
 - Explain the expected vs. actual behavior
 
 ### Suggesting Enhancements
-- Search existing [issues](https://github.com/your-username/redteam-terminal/issues) to see if the enhancement has already been suggested
+
+- Search existing [issues](https://github.com/neoastra303/ShadowNetOps/issues) to see if the enhancement has already been suggested
 - Provide a clear and detailed explanation of the proposed enhancement
 - Explain why this enhancement would be useful to users
 - Consider the scope - is it a small change or a major feature?
 
 ### Pull Requests
+
 - Fork the repository
 - Create a new branch for your feature or bug fix (`git checkout -b feature/amazing-feature`)
 - Make your changes following the style guide below
@@ -34,10 +37,10 @@ By participating in this project, you agree to abide by our [Code of Conduct](CO
 ## Development Setup
 
 1. Fork the repository
-2. Clone your fork: `git clone https://github.com/your-username/redteam-terminal.git`
-3. Navigate to the project directory: `cd redteam-terminal`
+2. Clone your fork: `git clone https://github.com/neoastra303/ShadowNetOps.git`
+3. Navigate to the project directory: `cd ShadowNetOps`
 4. Create a virtual environment: `python -m venv venv`
-5. Activate the virtual environment: 
+5. Activate the virtual environment:
    - On Windows: `venv\Scripts\activate`
    - On macOS/Linux: `source venv/bin/activate`
 6. Install dependencies: `pip install -r requirements.txt`
@@ -47,6 +50,7 @@ By participating in this project, you agree to abide by our [Code of Conduct](CO
 ## Style Guides
 
 ### Python Style Guide
+
 - Follow [PEP 8](https://pep8.org/) style guide
 - Use 4 spaces for indentation (no tabs)
 - Maximum line length of 88 characters
@@ -55,12 +59,14 @@ By participating in this project, you agree to abide by our [Code of Conduct](CO
 - Include docstrings for all functions and classes
 
 ### Git Commit Messages
+
 - Use the present tense ("Add feature" not "Added feature")
 - Use the imperative mood ("Move cursor to..." not "Moves cursor to...")
 - Limit the first line to 72 characters or less
 - Reference issues and pull requests if applicable
 
 ### Documentation Style
+
 - Use clear and concise language
 - Follow the existing documentation structure
 - Include code examples where appropriate
@@ -69,12 +75,14 @@ By participating in this project, you agree to abide by our [Code of Conduct](CO
 ## Testing
 
 ### Writing Tests
+
 - Add tests for new features or bug fixes
 - Follow the existing test structure
 - Use descriptive names for test functions
 - Test edge cases and error conditions
 
 ### Running Tests
+
 - Before submitting a PR, ensure all tests pass
 - Run the application to verify your changes work as expected
 
@@ -99,8 +107,8 @@ Please report security vulnerabilities responsibly by following our [Security Po
 ## Questions?
 
 If you have questions about contributing, feel free to:
-- Start a discussion in the [Discussions](https://github.com/your-username/redteam-terminal/discussions) tab
-- Email us at support@redteam-terminal.com
+
+- Start a discussion in the [Discussions](https://github.com/neoastra303/ShadowNetOps/discussions) tab
 - Join our community (when available)
 
 Thank you for contributing to RedTeam Terminal!
