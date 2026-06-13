@@ -1,5 +1,4 @@
 from rich.console import Console
-import time
 from questionary import Style
 import questionary
 
@@ -8,26 +7,24 @@ class SocialEngineeringToolkit:
         self.console = console
 
     def run(self):
-        self.console.print("[bold magenta]Social Engineering & Attack Toolkit[/bold magenta]")
+        self.console.print("[bold magenta]Social Engineering Toolkit[/bold magenta]")
         choice = questionary.select(
             "Select an attack type",
-            choices=["Phishing Simulation", "Pretexting Generator", "Impersonation Scripts", "Credential Harvesting", "Spear Phishing", "DDoS Attack (Demo)", "← Back"],
+            choices=["Phishing Simulation", "Pretexting Generator", "Impersonation Scripts", "Credential Harvesting", "Spear Phishing", "← Back"],
             style=Style([("qmark", "fg:ansicyan bold"), ("question", "bold"), ("pointer", "fg:ansicyan bold"), ("highlighted", "fg:ansicyan bold"), ("selected", "fg:ansigreen bold")])
         ).ask()
-        if choice == "1":
-            self.phishing_simulation()
-        elif choice == "2":
-            self.pretexting_generator()
-        elif choice == "3":
-            self.impersonation_scripts()
-        elif choice == "4":
-            self.credential_harvesting()
-        elif choice == "5":
-            self.spear_phishing()
-        elif choice == "6":
-            self.ddos_attack_demo()
-        elif choice == "← Back":
+        if choice == "← Back":
             return
+        actions = {
+            "Phishing Simulation": self.phishing_simulation,
+            "Pretexting Generator": self.pretexting_generator,
+            "Impersonation Scripts": self.impersonation_scripts,
+            "Credential Harvesting": self.credential_harvesting,
+            "Spear Phishing": self.spear_phishing,
+        }
+        action = actions.get(choice)
+        if action:
+            action()
 
     def phishing_simulation(self):
         self.console.print("[bold yellow]Phishing Simulation[/bold yellow]")
@@ -59,11 +56,3 @@ class SocialEngineeringToolkit:
         company = questionary.text("Enter target's company").ask() or ""
         self.console.print(f"[green]Spear phishing email crafted for {name} at {company} (demo only).[/green]")
 
-    def ddos_attack_demo(self):
-        self.console.print("[bold yellow]DDoS Attack Tool (Demo)[/bold yellow]")
-        target = questionary.text("Enter target IP or domain").ask() or ""
-        self.console.print(f"[red]Launching simulated DDoS attack on {target}...[/red]")
-        for i in range(5):
-            self.console.print(f"[red]Packet {i+1} sent to {target}...[/red]")
-            time.sleep(0.5)
-        self.console.print(f"[green]DDoS simulation complete for {target}.[/green]")
