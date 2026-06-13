@@ -5,6 +5,7 @@ Handles loading, validating, and accessing configuration settings
 
 import configparser
 import os
+from pathlib import Path
 from typing import Optional, Union, Any
 
 
@@ -13,13 +14,16 @@ class ConfigManager:
     Configuration Manager class to handle application settings
     """
     
-    def __init__(self, config_file: str = "config.ini"):
+    def __init__(self, config_file: str | None = None):
         """
         Initialize the configuration manager
         
         Args:
             config_file (str): Path to the configuration file
         """
+        if config_file is None:
+            config_dir = Path(__file__).parent
+            config_file = str(config_dir / "config.ini")
         self.config_file = config_file
         self.config = configparser.ConfigParser()
         self.load_config()
@@ -28,7 +32,9 @@ class ConfigManager:
         """
         Load configuration from file, create default if doesn't exist
         """
-        if not os.path.exists(self.config_file):
+        config_path = Path(self.config_file)
+        if not config_path.exists():
+            config_path.parent.mkdir(parents=True, exist_ok=True)
             self.create_default_config()
         
         self.config.read(self.config_file)
