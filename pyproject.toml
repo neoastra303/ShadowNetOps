@@ -4,10 +4,9 @@ version = "2.1.0"
 description = "A comprehensive cybersecurity assessment platform featuring multiple security testing modules for network, web application, wireless, and digital forensics domains."
 requires-python = ">=3.8"
 dependencies = [
-    "colorama>=0.4.6",
-    "pyfiglet>=1.0.4",
     "requests>=2.32.5",
     "rich>=14.2.0",
+    "questionary>=2.1.0",
     "python-magic>=0.4.27",
     "pycryptodome>=3.21.0",
 ]
