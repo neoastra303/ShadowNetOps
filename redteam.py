@@ -139,30 +139,13 @@ class ShadowNetOps:
         self.dependency_manager = get_dependency_manager(console)
 
     def display_banner(self) -> None:
-        logo = Text("""
-        ███████╗██╗  ██╗ █████╗ ██████╗  ██████╗ ██╗    ██╗
-        ██╔════╝██║  ██║██╔══██╗██╔══██╗██╔═══██╗██║    ██║
-        ███████╗███████║███████║██║  ██║██║   ██║██║ █╗ ██║
-        ╚════██║██╔══██║██╔══██║██║  ██║██║   ██║██║███╗██║
-        ███████║██║  ██║██║  ██║██████╔╝╚██████╔╝╚███╔███╔╝
-        ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═════╝  ╚═════╝  ╚══╝╚══╝
-""", style="#38bdf8")
-        panel = Panel(
-            Text.assemble(
-                ("\n", ""),
-                logo,
-                ("\n", ""),
-                (Text("Cybersecurity Operations Platform", style="#94a3b8"), ""),
-                ("   ", ""),
-                (Text("v2.1.0", style="bold #c084fc"), ""),
-                ("\n\n", ""),
-            ),
-            title=Text(" ShadowNetOps ", style="bold #38bdf8"),
-            subtitle=Text(" Network Recon · Vuln Assessment · OSINT · Forensics · Crypto ", style="#64748b"),
-            border_style="#c084fc",
-            box=box.ROUNDED,
-            padding=(0, 4),
-        )
+        content = Text()
+        content.append("               ShadowNetOps  v2.1.0\n", style="bold #38bdf8")
+        content.append("            Cybersecurity Operations Platform", style="#94a3b8")
+        content.append("\n\n")
+        content.append("     Recon  |  Vuln  |  OSINT  |  Forensics  |  Web  |  Wireless", style="dim #64748b")
+        content.append("\n")
+        panel = Panel(content, border_style="#c084fc", box=box.ROUNDED, padding=(1, 4))
         self.console.print(panel)
         self.console.print()
 
