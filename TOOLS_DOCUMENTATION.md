@@ -252,20 +252,19 @@ Domain inputs validated with `DOMAIN_PATTERN`.
 
 ### Tools
 
-| #   | Tool                  | Description                        | External Dep               |
-| --- | --------------------- | ---------------------------------- | -------------------------- |
-| 1   | **WiFi Scanner**      | airodump-ng network discovery      | aircrack-ng suite          |
-| 2   | **Handshake Capture** | airodump-ng WPA handshake capture  | aircrack-ng suite          |
-| 3   | **WPA Cracking**      | hashcat password cracking          | `sudo apt install hashcat` |
-| 4   | **Bluetooth Scanner** | blue_hydra device discovery        | `pip install blue_hydra`   |
-| 5   | **Wifite**            | Automated wireless audit           | `sudo apt install wifite`  |
-| 6   | **GPS Mapping**       | Kismet-based geolocation (guide)   | kismet                     |
-| 7   | **Deauth Attack**     | aireplay-ng deauthentication       | aircrack-ng suite          |
-| 8   | **Evil Twin**         | hostapd rogue AP (guide)           | hostapd                    |
-| 9   | **Phishing Portal**   | Fluxion captive portal (guide)     | fluxion                    |
-| 10  | **PMKID Capture**     | hcxdumptool PMKID (guide)          | hcxdumptool                |
-| 11  | **WPS Attack**        | reaver WPS PIN brute-force         | `sudo apt install reaver`  |
-| 12  | **Signal Jammer**     | mdk4 jamming (educational warning) | mdk4                       |
+| #   | Tool                  | Description                       | External Dep               |
+| --- | --------------------- | --------------------------------- | -------------------------- |
+| 1   | **WiFi Scanner**      | airodump-ng network discovery     | aircrack-ng suite          |
+| 2   | **Handshake Capture** | airodump-ng WPA handshake capture | aircrack-ng suite          |
+| 3   | **WPA Cracking**      | hashcat password cracking         | `sudo apt install hashcat` |
+| 4   | **Bluetooth Scanner** | blue_hydra device discovery       | `pip install blue_hydra`   |
+| 5   | **Wifite**            | Automated wireless audit          | `sudo apt install wifite`  |
+| 6   | **GPS Mapping**       | Kismet-based geolocation (guide)  | kismet                     |
+| 7   | **Deauth Attack**     | aireplay-ng deauthentication      | aircrack-ng suite          |
+| 8   | **Evil Twin**         | hostapd rogue AP (guide)          | hostapd                    |
+| 9   | **Phishing Portal**   | Fluxion captive portal (guide)    | fluxion                    |
+| 10  | **PMKID Capture**     | hcxdumptool PMKID (guide)         | hcxdumptool                |
+| 11  | **WPS Attack**        | reaver WPS PIN brute-force        | `sudo apt install reaver`  |
 
 ### Interface
 
