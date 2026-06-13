@@ -1,5 +1,5 @@
 """
-RedTeam Terminal - Setup Configuration
+ShadowNetOps - Setup Configuration
 """
 
 from setuptools import setup, find_packages
@@ -15,10 +15,10 @@ with open('requirements.txt', 'r', encoding='utf-8') as f:
     requirements = [line.strip() for line in f if line.strip() and not line.startswith('#')]
 
 setup(
-    name='redteam-terminal',
+    name='shadow-netops',
     version='2.1.0',
-    author='RedTeam Terminal Project',
-    author_email='security@redteam-terminal.com',
+    author='ShadowNetOps Project',
+    author_email='security@shadow-netops.io',
     description='A comprehensive cybersecurity assessment platform featuring multiple security testing modules for network, web application, wireless, and digital forensics domains.',
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -48,7 +48,7 @@ setup(
     install_requires=requirements,
     entry_points={
         'console_scripts': [
-            'redteam-terminal=redteam:main',
+            'shadow-netops=redteam:main',
         ],
     },
     keywords='security, penetration-testing, osint, cybersecurity, red-team, vulnerability-assessment, forensics',
