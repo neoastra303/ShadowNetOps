@@ -199,8 +199,7 @@ class ShadowNetOps:
             label = name
             if desc:
                 label = f"{name}\n  {desc}"
-            style = "fg:red bold" if id_ == "14" else ""
-            choices.append(questionary.Choice(title=label, value=id_, style=style))
+            choices.append(questionary.Choice(title=label, value=id_))
         result = questionary.select(
             "Select a tool category",
             choices=choices,
