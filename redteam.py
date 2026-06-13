@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
-RedTeam Terminal - Cybersecurity Operations CLI
-A cyberpunk-themed terminal tool for penetration testing and security operations
+ShadowNetOps - Advanced Network Security Operations & Red Teaming Platform
 """
 
 import sys
@@ -9,6 +8,8 @@ import re
 import subprocess
 import os
 import hashlib
+import base64
+import urllib.parse
 from typing import Optional
 from rich.console import Console
 from rich.panel import Panel
@@ -28,11 +29,10 @@ from tools.forensics import ForensicsTools
 from tools.reporting import ReportingModule
 from tools.misc_utils import MiscUtilities
 from tools.dependency_manager import get_dependency_manager
-
-# Import new tool modules
 from tools.malware_analysis import MalwareAnalysisTools
 from tools.reverse_engineering import ReverseEngineeringTools
 from tools.cryptography_tools import CryptographyTools
+from tools.base_tool import URL_PATTERN, DOMAIN_PATTERN, BaseTool
 
 colorama_init()
 console = Console()
@@ -127,18 +127,7 @@ class RedTeamTerminal:
         self.console.print()
 
     def validate_target(self, target: str) -> bool:
-        """Validate target input to prevent command injection and ensure proper format"""
-        # Basic validation for IP addresses and domain names
-        ip_pattern = r'^(\d{1,3}\.){3}\d{1,3}(/(\d|[1-2]\d|3[0-2]))?$'
-        domain_pattern = r'^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$'
-        
-        if re.match(ip_pattern, target) or re.match(domain_pattern, target):
-            # Additional check to prevent command injection
-            dangerous_chars = [';', '&', '|', '`', '$', '(', ')', '<', '>', '||', '&&']
-            if any(char in target for char in dangerous_chars):
-                return False
-            return True
-        return False
+        return BaseTool.validate_target(target)
 
     def check_dependencies(self, category: str) -> bool:
         """Check if required dependencies for a category are installed"""
@@ -294,15 +283,7 @@ class RedTeamTerminal:
         
         if choice == "1":
             url = Prompt.ask("Enter target URL for SQLi scan")
-            # Validate URL format
-            url_pattern = re.compile(
-                r'^https?://'  # http:// or https://
-                r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+[A-Z]{2,6}\.?|'  # domain...
-                r'localhost|'  # localhost...
-                r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
-                r'(?::\d+)?'  # optional port
-                r'(?:/?|[/?]\S+)$', re.IGNORECASE)
-            if not url_pattern.match(url):
+            if not URL_PATTERN.match(url):
                 self.console.print("[red]Invalid URL format[/red]")
                 return
             
@@ -318,15 +299,7 @@ class RedTeamTerminal:
                 self.console.print(f"[red]Error running sqlmap: {e}[/red]")
         elif choice == "2":
             url = Prompt.ask("Enter target URL for XSS test")
-            # Validate URL format
-            url_pattern = re.compile(
-                r'^https?://'  # http:// or https://
-                r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+[A-Z]{2,6}\.?|'  # domain...
-                r'localhost|'  # localhost...
-                r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
-                r'(?::\d+)?'  # optional port
-                r'(?:/?|[/?]\S+)$', re.IGNORECASE)
-            if not url_pattern.match(url):
+            if not URL_PATTERN.match(url):
                 self.console.print("[red]Invalid URL format[/red]")
                 return
                 
@@ -342,15 +315,7 @@ class RedTeamTerminal:
                 self.console.print(f"[red]Error running XSStrike: {e}[/red]")
         elif choice == "3":
             url = Prompt.ask("Enter target URL for CSRF PoC")
-            # Validate URL format
-            url_pattern = re.compile(
-                r'^https?://'  # http:// or https://
-                r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+[A-Z]{2,6}\.?|'  # domain...
-                r'localhost|'  # localhost...
-                r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
-                r'(?::\d+)?'  # optional port
-                r'(?:/?|[/?]\S+)$', re.IGNORECASE)
-            if not url_pattern.match(url):
+            if not URL_PATTERN.match(url):
                 self.console.print("[red]Invalid URL format[/red]")
                 return
                 
@@ -358,15 +323,7 @@ class RedTeamTerminal:
             self.console.print("[green]CSRF PoC generated (demo).[/green]")
         elif choice == "4":
             url = Prompt.ask("Enter target URL for directory brute force")
-            # Validate URL format
-            url_pattern = re.compile(
-                r'^https?://'  # http:// or https://
-                r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+[A-Z]{2,6}\.?|'  # domain...
-                r'localhost|'  # localhost...
-                r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
-                r'(?::\d+)?'  # optional port
-                r'(?:/?|[/?]\S+)$', re.IGNORECASE)
-            if not url_pattern.match(url):
+            if not URL_PATTERN.match(url):
                 self.console.print("[red]Invalid URL format[/red]")
                 return
                 
@@ -383,15 +340,7 @@ class RedTeamTerminal:
                 self.console.print(f"[red]Error running ffuf: {e}[/red]")
         elif choice == "5":
             url = Prompt.ask("Enter target URL for Nikto scan")
-            # Validate URL format
-            url_pattern = re.compile(
-                r'^https?://'  # http:// or https://
-                r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+[A-Z]{2,6}\.?|'  # domain...
-                r'localhost|'  # localhost...
-                r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
-                r'(?::\d+)?'  # optional port
-                r'(?:/?|[/?]\S+)$', re.IGNORECASE)
-            if not url_pattern.match(url):
+            if not URL_PATTERN.match(url):
                 self.console.print("[red]Invalid URL format[/red]")
                 return
                 
@@ -407,9 +356,7 @@ class RedTeamTerminal:
                 self.console.print(f"[red]Error running Nikto: {e}[/red]")
         elif choice == "6":
             domain = Prompt.ask("Enter domain for subdomain discovery")
-            # Validate domain format
-            domain_pattern = r'^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$'
-            if not re.match(domain_pattern, domain):
+            if not DOMAIN_PATTERN.match(domain):
                 self.console.print("[red]Invalid domain format[/red]")
                 return
                 
@@ -436,15 +383,7 @@ class RedTeamTerminal:
                 self.console.print(f"[red]Error during subdomain discovery: {e}[/red]")
         elif choice == "7":
             url = Prompt.ask("Enter URL for technology stack detection")
-            # Validate URL format
-            url_pattern = re.compile(
-                r'^https?://'  # http:// or https://
-                r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+[A-Z]{2,6}\.?|'  # domain...
-                r'localhost|'  # localhost...
-                r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
-                r'(?::\d+)?'  # optional port
-                r'(?:/?|[/?]\S+)$', re.IGNORECASE)
-            if not url_pattern.match(url):
+            if not URL_PATTERN.match(url):
                 self.console.print("[red]Invalid URL format[/red]")
                 return
                 
@@ -475,15 +414,7 @@ class RedTeamTerminal:
                 self.console.print(f"[red]Error during technology detection: {e}[/red]")
         elif choice == "8":
             url = Prompt.ask("Enter URL for HTTP header analysis")
-            # Validate URL format
-            url_pattern = re.compile(
-                r'^https?://'  # http:// or https://
-                r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+[A-Z]{2,6}\.?|'  # domain...
-                r'localhost|'  # localhost...
-                r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
-                r'(?::\d+)?'  # optional port
-                r'(?:/?|[/?]\S+)$', re.IGNORECASE)
-            if not url_pattern.match(url):
+            if not URL_PATTERN.match(url):
                 self.console.print("[red]Invalid URL format[/red]")
                 return
                 
@@ -533,20 +464,26 @@ class RedTeamTerminal:
                 self.console.print(f"[red]Error during header analysis: {e}[/red]")
         elif choice == "9":
             domain = Prompt.ask("Enter domain for Wayback Machine search")
-            # Validate domain format
-            domain_pattern = r'^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$'
-            if not re.match(domain_pattern, domain):
+            if not DOMAIN_PATTERN.match(domain):
                 self.console.print("[red]Invalid domain format[/red]")
                 return
                 
             self.console.print(f"[cyan]Searching Wayback Machine for {domain}...[/cyan]")
-            self.console.print("[yellow]Note: This would use the Wayback Machine API to find historical URLs[/yellow]")
-            
-            # In a real implementation, this would use the archive.org API
-            # For now, we'll just show what would happen
-            self.console.print("[dim]This would fetch historical URLs from archive.org for:")
-            self.console.print(f"  https://web.archive.org/cdx/search/cdx?url={domain}/*&output=json")
-            self.console.print("This can help find old endpoints, admin panels, or forgotten resources.[/dim]")
+            try:
+                import requests
+                resp = requests.get(
+                    f"https://web.archive.org/cdx/search/cdx?url={domain}/*&output=json&limit=10",
+                    timeout=15
+                )
+                if resp.status_code == 200 and len(resp.json()) > 1:
+                    results = resp.json()[1:11]
+                    self.console.print(f"[bold green]Found {len(results)} historical URLs:[/bold green]")
+                    for entry in results:
+                        self.console.print(f"  [cyan]{entry[2]}[/cyan]")
+                else:
+                    self.console.print("[yellow]No archived URLs found or API unavailable.[/yellow]")
+            except Exception:
+                self.console.print("[yellow]Wayback Machine API unavailable. Try again later.[/yellow]")
         elif choice == "10":
             return
 
@@ -786,25 +723,28 @@ class RedTeamTerminal:
         choice = Prompt.ask("Choose a malware analysis tool", choices=["1", "2", "3", "4", "5", "6", "7", "8"])
         
         if choice == "1":
-            self.console.print("[cyan]Running static malware analysis...[/cyan]")
-            self.console.print("[yellow]This would use tools like YARA, PEiD, or similar static analysis tools[/yellow]")
-            self.console.print("[dim]In a real implementation, this would analyze file signatures, packers, and potential malicious patterns[/dim]")
+            file_path = Prompt.ask("Enter file path for static analysis")
+            if os.path.isfile(file_path):
+                self.console.print(f"[cyan]Running static analysis on [green]{file_path}[/green]...[/cyan]")
+                result = subprocess.run(["file", file_path], capture_output=True, text=True, timeout=15)
+                self.console.print(f"[bold]File type:[/bold] {result.stdout.strip()}")
+                self.console.print("[yellow]Full static analysis would also check: file signatures, packer detection, entropy analysis[/yellow]")
+            else:
+                self.console.print("[red]Invalid file path.[/red]")
         elif choice == "2":
-            self.console.print("[cyan]Running dynamic malware analysis...[/cyan]")
-            self.console.print("[yellow]This would use sandbox environments like Cuckoo, ANY.RUN, or similar[/yellow]")
-            self.console.print("[dim]In a real implementation, this would execute malware in isolated environments to observe behavior[/dim]")
+            self.console.print("[cyan]Dynamic analysis requires a sandbox environment (Cuckoo, ANY.RUN).[/cyan]")
+            self.console.print("[yellow]In a real scenario: submit the sample to a sandbox, observe behavior, network calls, process actions.[/yellow]")
         elif choice == "3":
             file_path = Prompt.ask("Enter file path for string extraction")
             if os.path.isfile(file_path):
                 self.console.print(f"[cyan]Extracting strings from [green]{file_path}[/green]...[/cyan]")
                 try:
-                    # Extract strings using strings command if available
                     result = subprocess.run(["strings", file_path], capture_output=True, text=True, check=True, timeout=30)
                     if result.returncode == 0:
                         lines = result.stdout.split('\n')
                         self.console.print(f"[bold green]Found {len(lines)} strings in {file_path}:[/bold green]")
-                        for line in lines[:20]:  # Show first 20 strings
-                            if len(line) > 4:  # Filter out short strings
+                        for line in lines[:20]:
+                            if len(line) > 4:
                                 self.console.print(f"  [cyan]{line}[/cyan]")
                     else:
                         self.console.print(f"[red]Strings command failed with code {result.returncode}[/red]")
@@ -817,25 +757,57 @@ class RedTeamTerminal:
             else:
                 self.console.print("[red]Invalid file path.[/red]")
         elif choice == "4":
-            self.console.print("[cyan]Running YARA rule scanner...[/cyan]")
-            self.console.print("[yellow]This would use YARA to scan files with custom detection rules[/yellow]")
-            self.console.print("[dim]In a real implementation, this would detect malware families, packers, and suspicious patterns[/dim]")
+            rule_path = Prompt.ask("Enter YARA rule file path", default="rules.yar")
+            target_path = Prompt.ask("Enter target file/directory to scan")
+            if os.path.isfile(rule_path) and os.path.exists(target_path):
+                self.console.print(f"[cyan]Scanning [green]{target_path}[/green] with rules [green]{rule_path}[/green]...[/cyan]")
+                try:
+                    result = subprocess.run(["yara", rule_path, target_path], capture_output=True, text=True, timeout=60)
+                    if result.stdout.strip():
+                        self.console.print("[bold red]YARA matches found:[/bold red]")
+                        self.console.print(result.stdout)
+                    else:
+                        self.console.print("[green]No YARA matches.[/green]")
+                except FileNotFoundError:
+                    self.console.print("[red]yara command not found. Install YARA.[/red]")
+                except Exception as e:
+                    self.console.print(f"[red]Error: {e}[/red]")
+            else:
+                self.console.print("[red]Invalid rule file or target path.[/red]")
         elif choice == "5":
             file_path = Prompt.ask("Enter PE file path for header analysis")
             if os.path.isfile(file_path):
                 self.console.print(f"[cyan]Analyzing PE headers in [green]{file_path}[/green]...[/cyan]")
-                self.console.print("[yellow]This would parse PE headers to identify compile time, sections, imports, and resources[/yellow]")
-                self.console.print("[dim]In a real implementation, this would use pefile library to analyze PE structures[/dim]")
+                try:
+                    with open(file_path, 'rb') as f:
+                        magic = f.read(2)
+                    if magic == b'MZ':
+                        self.console.print("[green]Valid MZ header detected (PE file).[/green]")
+                    else:
+                        self.console.print(f"[yellow]File signature: {magic.hex()} (may not be a PE file)[/yellow]")
+                except Exception as e:
+                    self.console.print(f"[red]Error reading file: {e}[/red]")
             else:
                 self.console.print("[red]Invalid file path.[/red]")
         elif choice == "6":
-            self.console.print("[cyan]Monitoring network traffic for malware communications...[/cyan]")
-            self.console.print("[yellow]This would capture and analyze network traffic for C2 communications[/yellow]")
-            self.console.print("[dim]In a real implementation, this would use tools like Wireshark, tcpdump, or Zeek[/dim]")
+            interface = Prompt.ask("Enter network interface to monitor", default="eth0")
+            self.console.print(f"[cyan]Starting packet capture on {interface} for 10 seconds...[/cyan]")
+            try:
+                result = subprocess.run(["tcpdump", "-i", interface, "-c", "10", "-nn"],
+                                      capture_output=True, text=True, timeout=15)
+                self.console.print(result.stdout if result.stdout.strip() else "[yellow]No packets captured.[/yellow]")
+            except FileNotFoundError:
+                self.console.print("[red]tcpdump not found. Install it for network traffic analysis.[/red]")
+            except Exception as e:
+                self.console.print(f"[red]Error: {e}[/red]")
         elif choice == "7":
-            self.console.print("[cyan]Analyzing memory dumps for malware artifacts...[/cyan]")
-            self.console.print("[yellow]This would search memory dumps for injected code, mutexes, and network connections[/yellow]")
-            self.console.print("[dim]In a real implementation, this would use Volatility or similar memory forensic tools[/dim]")
+            mem_path = Prompt.ask("Enter memory dump file path")
+            if os.path.isfile(mem_path):
+                self.console.print(f"[cyan]Analyzing memory dump [green]{mem_path}[/green]...[/cyan]")
+                self.console.print("[yellow]Memory analysis would check for: injected processes, network connections, registry artifacts[/yellow]")
+                self.console.print("[yellow]Install Volatility for full memory forensics: pip install volatility3[/yellow]")
+            else:
+                self.console.print("[red]Invalid file path.[/red]")
         elif choice == "8":
             return
     
@@ -863,37 +835,87 @@ class RedTeamTerminal:
         choice = Prompt.ask("Choose a reverse engineering tool", choices=["1", "2", "3", "4", "5", "6", "7", "8"])
         
         if choice == "1":
-            self.console.print("[cyan]Running disassembler...[/cyan]")
-            self.console.print("[yellow]This would use IDA Pro, Ghidra, or Radare2 to disassemble binaries[/yellow]")
-            self.console.print("[dim]In a real implementation, this would show assembly code and control flow graphs[/dim]")
+            file_path = Prompt.ask("Enter binary path to disassemble")
+            if os.path.isfile(file_path):
+                self.console.print(f"[cyan]Attempting to disassemble [green]{file_path}[/green]...[/cyan]")
+                try:
+                    result = subprocess.run(["objdump", "-d", file_path], capture_output=True, text=True, timeout=30)
+                    if result.returncode == 0:
+                        lines = result.stdout.split('\n')
+                        self.console.print(f"[bold]Disassembly ({len(lines)} lines):[/bold]")
+                        for line in lines[:25]:
+                            self.console.print(f"  [dim]{line}[/dim]")
+                    else:
+                        self.console.print("[yellow]objdump failed. Try installing binutils or using a dedicated tool.[/yellow]")
+                except FileNotFoundError:
+                    self.console.print("[red]objdump not found. Install binutils.[/red]")
+                except Exception as e:
+                    self.console.print(f"[red]Error: {e}[/red]")
+            else:
+                self.console.print("[red]Invalid file path.[/red]")
         elif choice == "2":
-            self.console.print("[cyan]Launching debugger...[/cyan]")
-            self.console.print("[yellow]This would use GDB, x64dbg, or OllyDbg to debug executables[/yellow]")
-            self.console.print("[dim]In a real implementation, this would allow step-through debugging and memory inspection[/dim]")
+            binary = Prompt.ask("Enter binary path to debug")
+            if os.path.isfile(binary):
+                self.console.print(f"[cyan]Use GDB to debug [green]{binary}[/green]: gdb {binary}[/cyan]")
+                self.console.print("[yellow]GDB commands: break main, run, next, step, info registers, x/s $rsp[/yellow]")
+            else:
+                self.console.print("[red]Invalid file path.[/red]")
         elif choice == "3":
-            self.console.print("[cyan]Running decompiler...[/cyan]")
-            self.console.print("[yellow]This would use Ghidra, IDA Pro, or similar to decompile binaries[/yellow]")
-            self.console.print("[dim]In a real implementation, this would convert machine code to pseudo-C code[/dim]")
+            file_path = Prompt.ask("Enter binary path to decompile")
+            if os.path.isfile(file_path):
+                self.console.print(f"[cyan]Attempting decompilation of [green]{file_path}[/green]...[/cyan]")
+                try:
+                    result = subprocess.run(["objdump", "-d", file_path], capture_output=True, text=True, timeout=30)
+                    if result.returncode == 0:
+                        self.console.print(f"[bold green]Disassembly output:[/bold green]")
+                        self.console.print("[yellow]For full decompilation, use Ghidra or IDA Pro.[/yellow]")
+                except FileNotFoundError:
+                    self.console.print("[red]objdump not found. Install binutils.[/red]")
+                except Exception as e:
+                    self.console.print(f"[red]Error: {e}[/red]")
+            else:
+                self.console.print("[red]Invalid file path.[/red]")
         elif choice == "4":
             file_path = Prompt.ask("Enter binary file path for analysis")
             if os.path.isfile(file_path):
                 self.console.print(f"[cyan]Analyzing binary [green]{file_path}[/green]...[/cyan]")
-                self.console.print("[yellow]This would analyze file format, architecture, and entry points[/yellow]")
-                self.console.print("[dim]In a real implementation, this would use file command or binwalk for binary analysis[/dim]")
+                result = subprocess.run(["file", file_path], capture_output=True, text=True, timeout=15)
+                self.console.print(f"[bold]Type:[/bold] {result.stdout.strip()}")
+                result2 = subprocess.run(["xxd", file_path, "-l", "512"], capture_output=True, text=True, timeout=15)
+                self.console.print(f"[bold]Hex dump (first 512 bytes):[/bold]")
+                for line in result2.stdout.split('\n')[:8]:
+                    self.console.print(f"  [dim]{line}[/dim]")
             else:
                 self.console.print("[red]Invalid file path.[/red]")
         elif choice == "5":
-            self.console.print("[cyan]Running function recognition...[/cyan]")
-            self.console.print("[yellow]This would identify standard library functions in disassembled code[/yellow]")
-            self.console.print("[dim]In a real implementation, this would use FLIRT signatures or similar recognition methods[/dim]")
+            self.console.print("[cyan]Function recognition identifies library calls in disassembled code.[/cyan]")
+            self.console.print("[yellow]Uses FLIRT signatures (IDA Pro) or manual analysis of call instructions.[/yellow]")
         elif choice == "6":
-            self.console.print("[cyan]Decrypting obfuscated strings...[/cyan]")
-            self.console.print("[yellow]This would identify and decrypt strings obfuscated by malware[/yellow]")
-            self.console.print("[dim]In a real implementation, this would emulate decryption routines or use static analysis[/dim]")
+            text = Prompt.ask("Enter hex-encoded or obfuscated string to decode")
+            try:
+                decoded = bytes.fromhex(text).decode('utf-8', errors='replace')
+                self.console.print(f"[green]Decoded: {decoded}[/green]")
+            except ValueError:
+                self.console.print("[yellow]Not valid hex. Try XOR brute-force:[yellow]")
+                key = Prompt.ask("Enter single-byte XOR key (0-255)", default="0x41")
+                try:
+                    key_byte = int(key, 16 if 'x' in key else 10) & 0xFF
+                    decoded = bytes(b ^ key_byte for b in text.encode()).decode('utf-8', errors='replace')
+                    self.console.print(f"[green]XOR decoded: {decoded}[/green]")
+                except Exception as e:
+                    self.console.print(f"[red]Error: {e}[/red]")
         elif choice == "7":
-            self.console.print("[cyan]Detecting executable packers...[/yellow]")
-            self.console.print("[yellow]This would identify packers like UPX, ASPack, or custom protectors[/yellow]")
-            self.console.print("[dim]In a real implementation, this would use PEiD signatures or similar detection methods[/dim]")
+            file_path = Prompt.ask("Enter binary path to check for packers")
+            if os.path.isfile(file_path):
+                self.console.print(f"[cyan]Checking [green]{file_path}[/green] for packers...[/cyan]")
+                result = subprocess.run(["file", file_path], capture_output=True, text=True, timeout=15)
+                if "UPX" in result.stdout:
+                    self.console.print("[red]UPX packer detected![/red]")
+                else:
+                    self.console.print("[green]No known packer signature detected via file command.[/green]")
+                self.console.print("[yellow]For comprehensive packer detection, use PEiD, Detect It Easy, or ExeInfoPE.[/yellow]")
+            else:
+                self.console.print("[red]Invalid file path.[/red]")
         elif choice == "8":
             return
     
@@ -942,16 +964,35 @@ class RedTeamTerminal:
             else:
                 self.console.print("[red]Invalid file path.[/red]")
         elif choice == "2":
-            self.console.print("[cyan]Encryption/Decryption functionality...[/cyan]")
-            self.console.print("[yellow]This would encrypt/decrypt data with AES, RSA, or other algorithms[/yellow]")
-            self.console.print("[dim]In a real implementation, this would use cryptography libraries like pycryptodome[/dim]")
+            self.console.print("[cyan]Encryption/Decryption[/cyan]")
+            mode = Prompt.ask("Encrypt or Decrypt?", choices=["encrypt", "decrypt"], default="encrypt")
+            text = Prompt.ask("Enter text")
+            key = Prompt.ask("Enter encryption password (min 16 chars)", default="defaultpassword123")
+            try:
+                from Crypto.Cipher import AES
+                from Crypto.Util.Padding import pad, unpad
+                import hashlib
+                key_bytes = hashlib.sha256(key.encode()).digest()
+                if mode == "encrypt":
+                    from Crypto.Random import get_random_bytes
+                    iv = get_random_bytes(16)
+                    cipher = AES.new(key_bytes, AES.MODE_CBC, iv)
+                    ct = cipher.encrypt(pad(text.encode(), AES.block_size))
+                    result = base64.b64encode(iv + ct).decode()
+                    self.console.print(f"[bold green]Encrypted (AES-256-CBC):[/bold green] {result}")
+                else:
+                    raw = base64.b64decode(text)
+                    iv, ct = raw[:16], raw[16:]
+                    cipher = AES.new(key_bytes, AES.MODE_CBC, iv)
+                    pt = unpad(cipher.decrypt(ct), AES.block_size).decode()
+                    self.console.print(f"[bold green]Decrypted:[/bold green] {pt}")
+            except ImportError:
+                self.console.print("[yellow]pycryptodome not installed. Install with: pip install pycryptodome[/yellow]")
+            except Exception as e:
+                self.console.print(f"[red]Error: {e}[/red]")
         elif choice == "3":
             text = Prompt.ask("Enter text for encoding/decoding")
-            self.console.print(f"[cyan]Encoding/Decoding [green]{text}[/green]...[/cyan]")
-            
-            # Show various encodings
-            import base64
-            import urllib.parse
+            self.console.print(f"[cyan]Encoding [green]{text}[/green]...[/cyan]")
             
             b64_encoded = base64.b64encode(text.encode()).decode()
             hex_encoded = text.encode().hex()
@@ -960,22 +1001,86 @@ class RedTeamTerminal:
             self.console.print(f"[bold]Base64:[/bold] {b64_encoded}")
             self.console.print(f"[bold]Hex:[/bold]    {hex_encoded}")
             self.console.print(f"[bold]URL:[/bold]    {url_encoded}")
+            
+            self.console.print()
+            decode_text = Prompt.ask("Enter string to decode (or press Enter to skip)", default="")
+            if decode_text:
+                self.console.print("[cyan]Attempting auto-decode...[/cyan]")
+                try:
+                    self.console.print(f"  [bold]Base64:[/bold] {base64.b64decode(decode_text).decode('utf-8', errors='replace')}")
+                except Exception:
+                    pass
+                try:
+                    self.console.print(f"  [bold]Hex:[/bold]    {bytes.fromhex(decode_text).decode('utf-8', errors='replace')}")
+                except Exception:
+                    pass
         elif choice == "4":
-            self.console.print("[cyan]Running cryptanalysis...[/cyan]")
-            self.console.print("[yellow]This would analyze cryptographic implementations for weaknesses[/yellow]")
-            self.console.print("[dim]In a real implementation, this would check for weak keys, improper padding, or protocol flaws[/dim]")
+            hash_val = Prompt.ask("Enter hash value to analyze")
+            self.console.print(f"[cyan]Analyzing hash [green]{hash_val}[/green]...[/cyan]")
+            length = len(hash_val)
+            if length == 32:
+                self.console.print("[bold]Possible algorithm: MD5[/bold]")
+            elif length == 40:
+                self.console.print("[bold]Possible algorithm: SHA1[/bold]")
+            elif length == 56:
+                self.console.print("[bold]Possible algorithm: SHA224[/bold]")
+            elif length == 64:
+                self.console.print("[bold]Possible algorithm: SHA256[/bold]")
+            elif length == 96:
+                self.console.print("[bold]Possible algorithm: SHA384[/bold]")
+            elif length == 128:
+                self.console.print("[bold]Possible algorithm: SHA512[/bold]")
+            else:
+                self.console.print(f"[yellow]Unknown hash type (length: {length} hex chars)[/yellow]")
         elif choice == "5":
-            self.console.print("[cyan]Analyzing SSL/TLS certificates...[/cyan]")
-            self.console.print("[yellow]This would check certificate validity, expiration, and security[/yellow]")
-            self.console.print("[dim]In a real implementation, this would use openssl or similar tools[/dim]")
+            host = Prompt.ask("Enter hostname to check SSL certificate")
+            self.console.print(f"[cyan]Checking SSL certificate for [green]{host}[/green]...[/cyan]")
+            try:
+                import ssl
+                import socket
+                ctx = ssl.create_default_context()
+                with ctx.wrap_socket(socket.socket(), server_hostname=host) as s:
+                    s.settimeout(10)
+                    s.connect((host, 443))
+                    cert = s.getpeercert()
+                    self.console.print(f"[bold]Subject:[/bold] {dict(cert['subject'][0][0])}")
+                    self.console.print(f"[bold]Issuer:[/bold] {dict(cert['issuer'][0][0])}")
+                    self.console.print(f"[bold]Valid from:[/bold] {cert['notBefore']}")
+                    self.console.print(f"[bold]Valid until:[/bold] {cert['notAfter']}")
+            except Exception as e:
+                self.console.print(f"[red]Could not retrieve certificate: {e}[/red]")
         elif choice == "6":
-            self.console.print("[cyan]Generating cryptographic keys...[/cyan]")
-            self.console.print("[yellow]This would generate RSA, ECC, or symmetric keys[/yellow]")
-            self.console.print("[dim]In a real implementation, this would use cryptography libraries[/dim]")
+            key_type = Prompt.ask("Key type", choices=["RSA", "AES"], default="RSA")
+            if key_type == "RSA":
+                self.console.print("[cyan]Generating RSA key pair...[/cyan]")
+                try:
+                    from Crypto.PublicKey import RSA
+                    key = RSA.generate(2048)
+                    self.console.print("[green]RSA 2048-bit key generated![/green]")
+                    self.console.print(f"[bold]Private key:[/bold]")
+                    self.console.print(key.export_key().decode()[:200] + "...")
+                    self.console.print(f"[bold]Public key:[/bold]")
+                    self.console.print(key.publickey().export_key().decode()[:200] + "...")
+                except ImportError:
+                    self.console.print("[yellow]Install pycryptodome for key generation.[/yellow]")
+            else:
+                import hashlib
+                pw = Prompt.ask("Enter passphrase for AES key")
+                key = hashlib.sha256(pw.encode()).digest()
+                self.console.print(f"[green]AES-256 key generated: {key.hex()[:48]}...[/green]")
         elif choice == "7":
-            self.console.print("[cyan]Creating digital signatures...[/cyan]")
-            self.console.print("[yellow]This would sign and verify data with digital signatures[/yellow]")
-            self.console.print("[dim]In a real implementation, this would use RSA/DSA/ECDSA signing[/dim]")
+            data = Prompt.ask("Enter data to sign (or verify)", default="test message")
+            sig_type = Prompt.ask("Action", choices=["sign", "verify"], default="sign")
+            if sig_type == "sign":
+                import hashlib
+                self.console.print(f"[bold]SHA256 hash:[/bold] {hashlib.sha256(data.encode()).hexdigest()}")
+                self.console.print("[yellow]In production, this would use RSA/ECDSA signing with a private key.[/yellow]")
+            else:
+                hash_val = Prompt.ask("Enter expected hash")
+                computed = hashlib.sha256(data.encode()).hexdigest()
+                match = computed == hash_val
+                self.console.print(f"[bold]Computed hash:[/bold] {computed}")
+                self.console.print(f"[{'green' if match else 'red'}]Hash {'matches' if match else 'does not match'}![/{'green' if match else 'red'}]")
         elif choice == "8":
             return
 

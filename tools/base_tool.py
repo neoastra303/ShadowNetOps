@@ -2,9 +2,28 @@
 Abstract base class for all RedTeam Terminal tools
 """
 
+import re
 from abc import ABC, abstractmethod
 from rich.console import Console
 from typing import Optional
+
+
+URL_PATTERN = re.compile(
+    r'^https?://'
+    r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+[A-Z]{2,6}\.?|'
+    r'localhost|'
+    r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'
+    r'(?::\d+)?'
+    r'(?:/?|[/?]\S+)$', re.IGNORECASE
+)
+
+DOMAIN_PATTERN = re.compile(
+    r'^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$'
+)
+
+IP_PATTERN = re.compile(r'^(\d{1,3}\.){3}\d{1,3}(/(\d|[1-2]\d|3[0-2]))?$')
+
+DANGEROUS_CHARS = [';', '&', '|', '`', '$', '(', ')', '<', '>', '||', '&&']
 
 
 class BaseTool(ABC):
@@ -45,6 +64,18 @@ class BaseTool(ABC):
         Validate user input to prevent command injection and other attacks
         Override this method in subclasses for specific validation rules
         """
-        # Default validation: check for dangerous characters
-        dangerous_chars = [';', '&', '|', '`', '$', '(', ')', '<', '>', '||', '&&']
-        return not any(char in input_value for char in dangerous_chars)
+        return not any(char in input_value for char in DANGEROUS_CHARS)
+    
+    @staticmethod
+    def validate_url(url: str) -> bool:
+        return bool(URL_PATTERN.match(url))
+    
+    @staticmethod
+    def validate_domain(domain: str) -> bool:
+        return bool(DOMAIN_PATTERN.match(domain))
+    
+    @staticmethod
+    def validate_target(target: str) -> bool:
+        if IP_PATTERN.match(target) or DOMAIN_PATTERN.match(target):
+            return not any(char in target for char in DANGEROUS_CHARS)
+        return False
