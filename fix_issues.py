@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Script to identify and fix issues in the RedTeam Terminal codebase
+Script to identify and fix issues in the ShadowNetOps codebase
 Automatically generates GitHub issues for fixed problems
 """
 

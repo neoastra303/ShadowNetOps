@@ -1,5 +1,5 @@
 """
-Dependency Manager for RedTeam Terminal
+Dependency Manager for ShadowNetOps
 Handles checking for and installing required external tools
 """
 

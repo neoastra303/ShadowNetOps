@@ -1,5 +1,5 @@
 """
-Configuration Manager for RedTeam Terminal
+Configuration Manager for ShadowNetOps
 Handles loading, validating, and accessing configuration settings
 """
 

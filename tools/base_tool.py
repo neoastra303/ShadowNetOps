@@ -1,5 +1,5 @@
 """
-Abstract base class for all RedTeam Terminal tools
+Abstract base class for all ShadowNetOps tools
 """
 
 import re
@@ -28,7 +28,7 @@ DANGEROUS_CHARS = [';', '&', '|', '`', '$', '(', ')', '<', '>', '||', '&&']
 
 class BaseTool(ABC):
     """
-    Abstract base class for all RedTeam tools
+    Abstract base class for all ShadowNetOps tools
     All tool modules should inherit from this class
     """
     
