@@ -95,7 +95,7 @@ def show_menu_table(console: Console, title: str, options: list[tuple[str, str, 
     return choice
 
 
-class RedTeamTerminal:
+class ShadowNetOps:
     def __init__(self):
         self.console = console
         self.network_recon = NetworkRecon(console)
@@ -740,7 +740,7 @@ class RedTeamTerminal:
 
 def main() -> None:
     try:
-        terminal = RedTeamTerminal()
+        terminal = ShadowNetOps()
         terminal.run()
     except KeyboardInterrupt:
         console.print(f"\n[{S['warning']}] Interrupted by user[/{S['warning']}]")
