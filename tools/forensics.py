@@ -1,6 +1,5 @@
 from rich.console import Console
 from rich.table import Table
-from rich.prompt import Prompt
 from rich.panel import Panel
 from rich import box
 import os
@@ -10,7 +9,7 @@ import subprocess
 import platform
 import json
 from datetime import datetime
-from .base_tool import BaseTool
+from .base_tool import BaseTool, CYBER_STYLE
 
 
 class ForensicsTools(BaseTool):
@@ -20,33 +19,29 @@ class ForensicsTools(BaseTool):
     def run(self):
         self.display_header("Forensics Tools")
         
-        # Add submenu for different forensics options
-        forensics_table = Table(
-            title="[bold cyan]Forensics Options[/bold cyan]",
-            show_header=True,
-            header_style="bold magenta",
-            border_style="cyan",
-            box=box.ROUNDED
-        )
-        forensics_table.add_column("ID", style="cyan", justify="center")
-        forensics_table.add_column("Forensics Type", style="green")
-        forensics_table.add_column("Description", style="white")
-        forensics_table.add_row("1", "Disk Analysis", "Analyze disk images and file systems")
-        forensics_table.add_row("2", "Memory Dump Analysis", "Analyze memory dumps for artifacts")
-        forensics_table.add_row("3", "Artifact Search", "Search for specific file types")
-        forensics_table.add_row("4", "File Hashing", "Calculate file hashes for integrity")
-        forensics_table.add_row("5", "Network Forensics", "Analyze network captures")
-        forensics_table.add_row("6", "Registry Analysis", "Analyze Windows registry hives")
-        forensics_table.add_row("7", "Timeline Analysis", "Create system activity timeline")
-        forensics_table.add_row("8", "Log Analysis", "Analyze system and application logs")
-        forensics_table.add_row("9", "File Carving", "Recover deleted files from disk images")
-        forensics_table.add_row("10", "Steganography Analysis", "Detect hidden data in files")
-        forensics_table.add_row("11", "Browser Artifact Analysis", "Analyze browser history, cookies, cache")
-        forensics_table.add_row("12", "Email Analysis", "Extract and analyze email artifacts")
-        forensics_table.add_row("13", "Back to Main Menu", "Return to main menu")
-        
-        self.console.print(forensics_table)
-        choice = Prompt.ask("Choose a forensics method", choices=["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"], default="1")
+        import questionary as q
+        choice = q.select(
+            "Forensics Method",
+            choices=[
+                q.Choice("Disk Analysis", value="1"),
+                q.Choice("Memory Dump Analysis", value="2"),
+                q.Choice("Artifact Search", value="3"),
+                q.Choice("File Hashing", value="4"),
+                q.Choice("Network Forensics", value="5"),
+                q.Choice("Registry Analysis", value="6"),
+                q.Choice("Timeline Analysis", value="7"),
+                q.Choice("Log Analysis", value="8"),
+                q.Choice("File Carving", value="9"),
+                q.Choice("Steganography Analysis", value="10"),
+                q.Choice("Browser Artifact Analysis", value="11"),
+                q.Choice("Email Analysis", value="12"),
+                q.Separator(),
+                q.Choice("← Back", value="13"),
+            ],
+            style=CYBER_STYLE,
+            qmark="┃",
+            pointer="▸",
+        ).ask()
         
         if choice == "1":
             self.disk_analysis()
@@ -85,8 +80,9 @@ class ForensicsTools(BaseTool):
         except (subprocess.CalledProcessError, FileNotFoundError):
             has_sleuthkit = False
         
+        import questionary as q
         if has_sleuthkit:
-            image_path = Prompt.ask("Enter disk image path for analysis")
+            image_path = q.text("Enter disk image path for analysis", style=CYBER_STYLE, qmark="┃").ask()
             if os.path.isfile(image_path):
                 self.console.print(f"[cyan]Analyzing disk image: {image_path}[/cyan]")
                 try:
@@ -106,7 +102,8 @@ class ForensicsTools(BaseTool):
             else:
                 self.display_result("Invalid disk image path.", "error")
         else:
-            path = Prompt.ask("Enter directory path to analyze", default=os.getcwd())
+            import questionary as q
+            path = q.text("Enter directory path to analyze", default=os.getcwd(), style=CYBER_STYLE, qmark="┃").ask()
             if os.path.isdir(path):
                 files = os.listdir(path)
                 self.display_result(f"Found {len(files)} files in {path}.", "success")
@@ -128,7 +125,8 @@ class ForensicsTools(BaseTool):
             has_volatility = False
         
         if has_volatility:
-            dump_path = Prompt.ask("Enter memory dump path for analysis")
+            import questionary as q
+            dump_path = q.text("Enter memory dump path for analysis", style=CYBER_STYLE, qmark="┃").ask()
             if os.path.isfile(dump_path):
                 self.console.print(f"[cyan]Analyzing memory dump: {dump_path}[/cyan]")
                 self.console.print("[yellow]Detecting profile...[/yellow]")
@@ -154,8 +152,9 @@ class ForensicsTools(BaseTool):
 
     def artifact_search(self):
         self.display_result("Artifact Search", "info")
-        ext = Prompt.ask("Enter file extension to search for (e.g., .log, .txt, .exe)", default=".log")
-        path = Prompt.ask("Enter directory path to search", default=os.getcwd())
+        import questionary as q
+        ext = q.text("Enter file extension to search for (e.g., .log, .txt, .exe)", default=".log", style=CYBER_STYLE, qmark="┃").ask() or ".log"
+        path = q.text("Enter directory path to search", default=os.getcwd(), style=CYBER_STYLE, qmark="┃").ask()
         
         if os.path.isdir(path):
             matches = glob.glob(os.path.join(path, f"**/*{ext}"), recursive=True)
@@ -167,7 +166,8 @@ class ForensicsTools(BaseTool):
 
     def file_hashing(self):
         self.display_result("File Hashing", "info")
-        file_path = Prompt.ask("Enter file path to hash")
+        import questionary as q
+        file_path = q.text("Enter file path to hash", style=CYBER_STYLE, qmark="┃").ask()
         
         if os.path.isfile(file_path):
             self.console.print(f"[cyan]Calculating hashes for: {file_path}[/cyan]")
@@ -209,7 +209,8 @@ class ForensicsTools(BaseTool):
         except (subprocess.CalledProcessError, FileNotFoundError):
             pass
         
-        pcap_path = Prompt.ask("Enter PCAP file path for network analysis")
+        import questionary as q
+        pcap_path = q.text("Enter PCAP file path for network analysis", style=CYBER_STYLE, qmark="┃").ask()
         
         if not os.path.isfile(pcap_path):
             self.display_result("Invalid PCAP file path.", "error")
@@ -256,7 +257,8 @@ class ForensicsTools(BaseTool):
         # Check for Windows registry tools
         if platform.system().lower() == 'windows':
             self.console.print("[yellow]This would analyze Windows registry hives using regripper or similar tools[/yellow]")
-            reg_path = Prompt.ask("Enter registry hive path (e.g., SOFTWARE, SAM, SYSTEM)", default="SOFTWARE")
+            import questionary as q
+            reg_path = q.text("Enter registry hive path (e.g., SOFTWARE, SAM, SYSTEM)", default="SOFTWARE", style=CYBER_STYLE, qmark="┃").ask() or "SOFTWARE"
             self.console.print(f"[dim]In a real implementation, this would analyze: {reg_path}[/dim]")
             self.console.print("[dim]This requires regripper or other registry analysis tools[/dim]")
         else:
@@ -274,7 +276,8 @@ class ForensicsTools(BaseTool):
             has_sleuthkit = False
         
         if has_sleuthkit:
-            directory = Prompt.ask("Enter directory to analyze for timeline", default=os.getcwd())
+            import questionary as q
+            directory = q.text("Enter directory to analyze for timeline", default=os.getcwd(), style=CYBER_STYLE, qmark="┃").ask()
             if os.path.isdir(directory):
                 self.console.print(f"[cyan]Creating timeline for directory: {directory}[/cyan]")
                 # Use find to get file modification times
@@ -301,7 +304,8 @@ class ForensicsTools(BaseTool):
             else:
                 self.display_result("Invalid directory path.", "error")
         else:
-            directory = Prompt.ask("Enter directory to analyze for timeline", default=os.getcwd())
+            import questionary as q
+            directory = q.text("Enter directory to analyze for timeline", default=os.getcwd(), style=CYBER_STYLE, qmark="┃").ask()
             if os.path.isdir(directory):
                 files = []
                 for root, dirs, filenames in os.walk(directory):
@@ -323,7 +327,8 @@ class ForensicsTools(BaseTool):
     def log_analysis(self):
         self.display_result("Log Analysis", "info")
         
-        log_path = Prompt.ask("Enter log file or directory path", default="/var/log")
+        import questionary as q
+        log_path = q.text("Enter log file or directory path", default="/var/log", style=CYBER_STYLE, qmark="┃").ask() or "/var/log"
         
         if os.path.isfile(log_path):
             # Analyze single log file
@@ -382,7 +387,8 @@ class ForensicsTools(BaseTool):
             has_photorec = False
         
         if has_photorec:
-            image_path = Prompt.ask("Enter disk image path for file carving")
+            import questionary as q
+            image_path = q.text("Enter disk image path for file carving", style=CYBER_STYLE, qmark="┃").ask()
             if os.path.isfile(image_path):
                 self.console.print(f"[cyan]Running PhotoRec for file recovery on {image_path}...[/cyan]")
                 try:
@@ -408,7 +414,8 @@ class ForensicsTools(BaseTool):
         except (subprocess.CalledProcessError, FileNotFoundError):
             has_steghide = False
         
-        file_path = Prompt.ask("Enter file path to analyze for hidden data")
+        import questionary as q
+        file_path = q.text("Enter file path to analyze for hidden data", style=CYBER_STYLE, qmark="┃").ask()
         
         if not os.path.isfile(file_path):
             self.display_result("Invalid file path.", "error")
@@ -444,7 +451,8 @@ class ForensicsTools(BaseTool):
         except ImportError:
             pass
         
-        browser_profile = Prompt.ask("Enter browser profile path to analyze")
+        import questionary as q
+        browser_profile = q.text("Enter browser profile path to analyze", style=CYBER_STYLE, qmark="┃").ask()
         
         if not os.path.isdir(browser_profile):
             self.display_result("Invalid browser profile path.", "error")
@@ -463,7 +471,8 @@ class ForensicsTools(BaseTool):
         self.display_result("Email Analysis", "info")
         
         # Check for email analysis tools
-        email_path = Prompt.ask("Enter email file or directory path to analyze")
+        import questionary as q
+        email_path = q.text("Enter email file or directory path to analyze", style=CYBER_STYLE, qmark="┃").ask()
         
         if not os.path.exists(email_path):
             self.display_result("Invalid email file or directory path.", "error")

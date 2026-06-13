@@ -8,8 +8,8 @@ from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
 from rich.progress import Progress, BarColumn, TextColumn, SpinnerColumn
-from rich.prompt import Prompt
 from rich import box
+from .base_tool import CYBER_STYLE
 from .base_tool import BaseTool
 try:
     from ..config_manager import get_config_manager
@@ -196,34 +196,28 @@ class NetworkRecon(BaseTool):
         """Run network reconnaissance"""
         self.display_header("Network Reconnaissance")
         
-        # Add submenu for different types of network reconnaissance
-        recon_table = Table(
-            title="[bold cyan]Network Reconnaissance Options[/bold cyan]",
-            show_header=True,
-            header_style="bold magenta",
-            border_style="cyan",
-            box=box.ROUNDED
-        )
-        recon_table.add_column("ID", style="cyan", justify="center")
-        recon_table.add_column("Recon Type", style="green")
-        recon_table.add_column("Description", style="white")
-        recon_table.add_row("1", "Port Scanning", "Scan for open ports and services")
-        recon_table.add_row("2", "Host Discovery", "Discover live hosts on a network")
-        recon_table.add_row("3", "Banner Grabbing", "Retrieve service banners")
-        recon_table.add_row("4", "OS Detection", "Detect operating system")
-        recon_table.add_row("5", "Traceroute", "Trace network path to target")
-        recon_table.add_row("6", "Back to Main Menu", "Return to main menu")
-        
-        self.console.print(recon_table)
-        choice = Prompt.ask("Choose a reconnaissance method", choices=["1", "2", "3", "4", "5", "6"], default="1")
+        import questionary as q
+        choice = q.select(
+            "Reconnaissance Method",
+            choices=[
+                q.Choice("Port Scanning", value="1"),
+                q.Choice("Host Discovery", value="2"),
+                q.Choice("Banner Grabbing", value="3"),
+                q.Choice("OS Detection", value="4"),
+                q.Choice("Traceroute", value="5"),
+                q.Separator(),
+                q.Choice("← Back", value="6"),
+            ],
+            style=CYBER_STYLE,
+            qmark="┃",
+            pointer="▸",
+        ).ask()
         
         if choice == "6":
             return
         
-        target = Prompt.ask(
-            "[cyan]Enter target IP or domain[/cyan]",
-            default="127.0.0.1"
-        )
+        import questionary as q
+        target = q.text("Enter target IP or domain", default="127.0.0.1", style=CYBER_STYLE, qmark="┃").ask()
         
         if not target or target.strip() == "":
             self.display_result("Invalid target", "error")
@@ -232,8 +226,9 @@ class NetworkRecon(BaseTool):
         # Add consent prompt for educational purpose
         self.console.print("[yellow]⚠[/yellow] This tool performs actual network reconnaissance for educational purposes only.")
         self.console.print("[yellow]⚠[/yellow] Always ensure you have proper authorization before scanning any network.")
-        consent = Prompt.ask("[bold magenta]Do you have explicit written consent to scan this target? (yes/no)[/bold magenta]", default="no")
-        if consent.lower() not in ['yes', 'y', 'true']:
+        import questionary as q
+        consent = q.confirm("Do you have explicit written consent to scan this target?", default=False, style=CYBER_STYLE, qmark="┃").ask()
+        if not consent:
             self.display_result("Scan cancelled - explicit consent required", "warning")
             return
         

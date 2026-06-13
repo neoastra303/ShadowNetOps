@@ -3,11 +3,11 @@ import csv
 import os
 from datetime import datetime
 from rich.console import Console
-from rich.prompt import Prompt
 from rich.table import Table
 from rich.panel import Panel
 from rich.markdown import Markdown
 from rich import box
+from .base_tool import CYBER_STYLE
 
 
 class ReportingModule:
@@ -17,20 +17,24 @@ class ReportingModule:
         self.report_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "reports")
 
     def run(self):
-        choice = Prompt.ask(
-            "[bold magenta]Reporting Module[/bold magenta]\n"
-            "  [cyan]1[/cyan]: Generate Executive Summary\n"
-            "  [cyan]2[/cyan]: Export Findings (JSON)\n"
-            "  [cyan]3[/cyan]: Export Findings (CSV)\n"
-            "  [cyan]4[/cyan]: Export Findings (HTML)\n"
-            "  [cyan]5[/cyan]: View Current Findings\n"
-            "  [cyan]6[/cyan]: Add Finding Manually\n"
-            "  [cyan]b[/cyan]: Back\n"
-            "Choose an option",
-            choices=["1", "2", "3", "4", "5", "6", "b"],
-            default="1"
-        )
-        if choice == "b":
+        import questionary as q
+        choice = q.select(
+            "Reporting Options",
+            choices=[
+                q.Choice("Generate Executive Summary", value="1"),
+                q.Choice("Export Findings (JSON)", value="2"),
+                q.Choice("Export Findings (CSV)", value="3"),
+                q.Choice("Export Findings (HTML)", value="4"),
+                q.Choice("View Current Findings", value="5"),
+                q.Choice("Add Finding Manually", value="6"),
+                q.Separator(),
+                q.Choice("← Back", value="7"),
+            ],
+            style=CYBER_STYLE,
+            qmark="┃",
+            pointer="▸",
+        ).ask()
+        if not choice or choice == "7":
             return
         handlers = {
             "1": self.generate_executive_summary,
@@ -43,9 +47,10 @@ class ReportingModule:
         handlers[choice]()
 
     def add_finding(self):
-        title = Prompt.ask("Finding title")
-        severity = Prompt.ask("Severity", choices=["critical", "high", "medium", "low", "info"], default="medium")
-        desc = Prompt.ask("Description")
+        import questionary as q
+        title = q.text("Finding title", style=CYBER_STYLE, qmark="┃").ask() or "Untitled"
+        severity = q.select("Severity", choices=["critical", "high", "medium", "low", "info"], default="medium", style=CYBER_STYLE, qmark="┃", pointer="▸").ask() or "medium"
+        desc = q.text("Description", style=CYBER_STYLE, qmark="┃").ask() or ""
         self.findings.append({
             "title": title,
             "severity": severity,
@@ -70,9 +75,10 @@ class ReportingModule:
 
     def generate_executive_summary(self):
         self.console.print("[bold]Executive Summary[/bold]")
-        org = Prompt.ask("Organization name", default="N/A")
-        assessor = Prompt.ask("Assessor name", default="N/A")
-        summary_text = Prompt.ask("Executive summary text")
+        import questionary as q
+        org = q.text("Organization name", default="N/A", style=CYBER_STYLE, qmark="┃").ask() or "N/A"
+        assessor = q.text("Assessor name", default="N/A", style=CYBER_STYLE, qmark="┃").ask() or "N/A"
+        summary_text = q.text("Executive summary text", style=CYBER_STYLE, qmark="┃").ask() or ""
 
         report = {
             "report_type": "Executive Summary",

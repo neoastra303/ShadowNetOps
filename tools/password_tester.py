@@ -5,8 +5,9 @@ from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
 from rich.progress import Progress, BarColumn, TextColumn
-from rich.prompt import Prompt
 from rich import box
+from questionary import Style
+import questionary
 
 
 class PasswordTester:
@@ -64,10 +65,10 @@ class PasswordTester:
         self.console.print("[bold cyan]═══ Password Strength Tester ═══[/bold cyan]")
         self.console.print()
         
-        password = Prompt.ask(
-            "[cyan]Enter password to test[/cyan]",
-            password=True
-        )
+        password = questionary.password(
+            "Enter password to test",
+            style=Style([("qmark", "fg:ansicyan bold"), ("question", "bold")])
+        ).ask()
         
         if not password:
             self.console.print("[bold red]✗ Error:[/bold red] No password provided")

@@ -7,9 +7,9 @@ from typing import Optional
 from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
-from rich.prompt import Prompt
 from rich.progress import track
 from rich import box
+from .base_tool import CYBER_STYLE
 
 try:
     from ..config_manager import get_config_manager
@@ -383,60 +383,43 @@ class OSINTTools(BaseTool):
         """Run OSINT tools with multiple options"""
         self.display_header("OSINT Tools")
         
-        # Add submenu for different types of OSINT
-        osint_table = Table(
-            title="[bold cyan]OSINT Options[/bold cyan]",
-            show_header=True,
-            header_style="bold magenta",
-            border_style="cyan",
-            box=box.ROUNDED
-        )
-        osint_table.add_column("ID", style="cyan", justify="center")
-        osint_table.add_column("OSINT Type", style="green")
-        osint_table.add_column("Description", style="white")
-        osint_table.add_row("1", "General OSINT", "Basic OSINT lookup")
-        osint_table.add_row("2", "WHOIS Lookup", "Domain and IP registration info")
-        osint_table.add_row("3", "DNS Lookup", "DNS record information")
-        osint_table.add_row("4", "Subdomain Discovery", "Find subdomains of a domain")
-        osint_table.add_row("5", "Email OSINT", "Investigate an email address")
-        osint_table.add_row("6", "Phone Number OSINT", "Investigate a phone number")
-        osint_table.add_row("7", "Social Media Investigation", "Find social media profiles")
-        osint_table.add_row("8", "Username Search", "Search for usernames across platforms")
-        osint_table.add_row("9", "Image Reverse Search", "Find where images are used online")
-        osint_table.add_row("10", "Back to Main Menu", "Return to main menu")
-        
-        self.console.print(osint_table)
-        choice = Prompt.ask("Choose an OSINT method", choices=["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"], default="1")
+        import questionary as q
+        choice = q.select(
+            "OSINT Method",
+            choices=[
+                q.Choice("General OSINT", value="1"),
+                q.Choice("WHOIS Lookup", value="2"),
+                q.Choice("DNS Lookup", value="3"),
+                q.Choice("Subdomain Discovery", value="4"),
+                q.Choice("Email OSINT", value="5"),
+                q.Choice("Phone Number OSINT", value="6"),
+                q.Choice("Social Media Investigation", value="7"),
+                q.Choice("Username Search", value="8"),
+                q.Choice("Image Reverse Search", value="9"),
+                q.Separator(),
+                q.Choice("← Back", value="10"),
+            ],
+            style=CYBER_STYLE,
+            qmark="┃",
+            pointer="▸",
+        ).ask()
         
         if choice == "10":
             return
         
+        import questionary as q
         target = None
-        if choice in ["1", "2", "3", "4"]:
-            target = Prompt.ask(
-                "[cyan]Enter domain, IP, or target to investigate[/cyan]",
-                default="example.com"
-            )
-        elif choice in ["5", "8"]:
-            target = Prompt.ask(
-                "[cyan]Enter email address or username to investigate[/cyan]",
-                default="user@example.com"
-            )
-        elif choice == "6":
-            target = Prompt.ask(
-                "[cyan]Enter phone number to investigate (format: +1234567890)[/cyan]",
-                default="+1234567890"
-            )
-        elif choice == "7":
-            target = Prompt.ask(
-                "[cyan]Enter name or username for social media investigation[/cyan]",
-                default="john_doe"
-            )
-        elif choice == "9":
-            target = Prompt.ask(
-                "[cyan]Enter image URL for reverse search[/cyan]",
-                default="https://example.com/image.jpg"
-            )
+        prompts = {
+            ("1", "2", "3", "4"): ("Enter domain, IP, or target to investigate", "example.com"),
+            ("5", "8"): ("Enter email address or username to investigate", "user@example.com"),
+            ("6",): ("Enter phone number to investigate (format: +1234567890)", "+1234567890"),
+            ("7",): ("Enter name or username for social media investigation", "john_doe"),
+            ("9",): ("Enter image URL for reverse search", "https://example.com/image.jpg"),
+        }
+        for keys, (prompt, default) in prompts.items():
+            if choice in keys:
+                target = q.text(prompt, default=default, style=CYBER_STYLE, qmark="┃").ask()
+                break
         
         if not target or target.strip() == "":
             self.display_result("Invalid target", "error")
@@ -445,8 +428,9 @@ class OSINTTools(BaseTool):
         # Add consent prompt for educational purpose
         self.console.print("[yellow]⚠[/yellow] This tool performs OSINT gathering for educational purposes only.")
         self.console.print("[yellow]⚠[/yellow] Always ensure you have proper authorization before investigating any target.")
-        consent = Prompt.ask("[bold magenta]Do you have explicit written consent to investigate this target? (yes/no)[/bold magenta]", default="no")
-        if consent.lower() not in ['yes', 'y', 'true']:
+        import questionary as q
+        consent = q.confirm("Do you have explicit written consent to investigate this target?", default=False, style=CYBER_STYLE, qmark="┃").ask()
+        if not consent:
             self.display_result("Investigation cancelled - explicit consent required", "warning")
             return
         

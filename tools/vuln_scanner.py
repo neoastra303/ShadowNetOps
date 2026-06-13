@@ -9,8 +9,8 @@ from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
 from rich.progress import track
-from rich.prompt import Prompt
 from rich import box
+from .base_tool import CYBER_STYLE
 from .base_tool import BaseTool
 try:
     from ..config_manager import get_config_manager
@@ -338,34 +338,28 @@ class VulnScanner(BaseTool):
         """Run vulnerability assessment with multiple options"""
         self.display_header("Vulnerability Assessment")
         
-        # Add submenu for different types of vulnerability scans
-        vuln_table = Table(
-            title="[bold cyan]Vulnerability Assessment Options[/bold cyan]",
-            show_header=True,
-            header_style="bold magenta",
-            border_style="cyan",
-            box=box.ROUNDED
-        )
-        vuln_table.add_column("ID", style="cyan", justify="center")
-        vuln_table.add_column("Scan Type", style="green")
-        vuln_table.add_column("Description", style="white")
-        vuln_table.add_row("1", "General Vulnerability Scan", "Basic vulnerability assessment")
-        vuln_table.add_row("2", "Nmap Script Scan", "Scan with nmap vulnerability scripts")
-        vuln_table.add_row("3", "SSL/TLS Security Scan", "Check for SSL/TLS misconfigurations")
-        vuln_table.add_row("4", "Web Vulnerability Scan", "Scan web applications with Nikto")
-        vuln_table.add_row("5", "CVE Lookup", "Lookup known CVEs for target")
-        vuln_table.add_row("6", "Back to Main Menu", "Return to main menu")
-        
-        self.console.print(vuln_table)
-        choice = Prompt.ask("Choose a vulnerability assessment method", choices=["1", "2", "3", "4", "5", "6"], default="1")
+        import questionary as q
+        choice = q.select(
+            "Vulnerability Assessment Method",
+            choices=[
+                q.Choice("General Vulnerability Scan", value="1"),
+                q.Choice("Nmap Script Scan", value="2"),
+                q.Choice("SSL/TLS Security Scan", value="3"),
+                q.Choice("Web Vulnerability Scan (Nikto)", value="4"),
+                q.Choice("CVE Lookup", value="5"),
+                q.Separator(),
+                q.Choice("← Back", value="6"),
+            ],
+            style=CYBER_STYLE,
+            qmark="┃",
+            pointer="▸",
+        ).ask()
         
         if choice == "6":
             return
         
-        target = Prompt.ask(
-            "[cyan]Enter target to assess[/cyan]",
-            default="example.com"
-        )
+        import questionary as q
+        target = q.text("Enter target to assess", default="example.com", style=CYBER_STYLE, qmark="┃").ask()
         
         if not target or target.strip() == "":
             self.display_result("Invalid target", "error")
@@ -374,8 +368,9 @@ class VulnScanner(BaseTool):
         # Add consent prompt for educational purpose
         self.console.print("[yellow]⚠[/yellow] This tool performs actual vulnerability scanning for educational purposes only.")
         self.console.print("[yellow]⚠[/yellow] Always ensure you have proper authorization before scanning any system.")
-        consent = Prompt.ask("[bold magenta]Do you have explicit written consent to scan this target? (yes/no)[/bold magenta]", default="no")
-        if consent.lower() not in ['yes', 'y', 'true']:
+        import questionary as q
+        consent = q.confirm("Do you have explicit written consent to scan this target?", default=False, style=CYBER_STYLE, qmark="┃").ask()
+        if not consent:
             self.display_result("Scan cancelled - explicit consent required", "warning")
             return
         
