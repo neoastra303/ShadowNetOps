@@ -40,16 +40,10 @@ class DependencyManager:
             True if tool exists, False otherwise
         """
         try:
-            # For Windows, we need to handle the command differently
-            if sys.platform.startswith('win'):
-                result = subprocess.run(['where', tool_name], 
-                                      stdout=subprocess.DEVNULL, 
-                                      stderr=subprocess.DEVNULL,
-                                      shell=True)
-            else:
-                result = subprocess.run(['which', tool_name], 
-                                      stdout=subprocess.DEVNULL, 
-                                      stderr=subprocess.DEVNULL)
+            cmd = ['where'] if sys.platform.startswith('win') else ['which']
+            result = subprocess.run(cmd + [tool_name],
+                                  stdout=subprocess.DEVNULL,
+                                  stderr=subprocess.DEVNULL)
             return result.returncode == 0
         except Exception:
             return False
@@ -149,52 +143,41 @@ class DependencyManager:
     
     def install_tool(self, tool_name: str) -> bool:
         """
-        Attempt to install a single tool based on the OS
+        Show installation instructions for a tool (removed auto-install for security)
         """
-        os_name = sys.platform
-        try:
-            if os_name.startswith('linux'):
-                # For apt-based systems
-                if tool_name in ['nmap', 'netdiscover', 'tcpdump', 'tshark', 'sqlmap', 'nikto', 'theharvester', 'whatweb', 'subfinder', 'wifite']:
-                    result = subprocess.run(['sudo', 'apt', 'install', '-y', tool_name], 
-                                          capture_output=True, text=True)
-                    return result.returncode == 0
-                elif tool_name in ['airodump-ng', 'aircrack-ng']:
-                    result = subprocess.run(['sudo', 'apt', 'install', '-y', 'aircrack-ng'], 
-                                          capture_output=True, text=True)
-                    return result.returncode == 0
-                elif tool_name in ['autopsy', 'sleuthkit']:
-                    result = subprocess.run(['sudo', 'apt', 'install', '-y', 'sleuthkit'], 
-                                          capture_output=True, text=True)
-                    return result.returncode == 0
-                elif tool_name in ['sherlock', 'holehe', 'h8mail', 'sublist3r']:
-                    result = subprocess.run(['pip', 'install', tool_name.replace('-', '_')], 
-                                          capture_output=True, text=True)
-                    return result.returncode == 0
-            elif os_name.startswith('darwin'):  # macOS
-                if tool_name in ['nmap', 'tcpdump', 'tshark', 'sqlmap', 'nikto', 'theharvester', 'whatweb', 'subfinder']:
-                    result = subprocess.run(['brew', 'install', tool_name], 
-                                          capture_output=True, text=True)
-                    return result.returncode == 0
-                elif tool_name in ['sherlock', 'holehe', 'h8mail', 'sublist3r']:
-                    result = subprocess.run(['pip', 'install', tool_name.replace('-', '_')], 
-                                          capture_output=True, text=True)
-                    return result.returncode == 0
-        except Exception as e:
-            self.console.print(f"[red]Error installing {tool_name}: {e}[/red]")
-            return False
-        
+        self.console.print(f"[yellow]Auto-install is disabled for security. Please install '{tool_name}' manually.[/yellow]")
+        self.console.print(f"[yellow]See: {self.get_tool_url(tool_name)}[/yellow]")
         return False
+    
+    def get_tool_url(self, tool_name: str) -> str:
+        """Return installation URL/reference for a tool"""
+        pip_tools = {'sherlock', 'holehe', 'h8mail', 'sublist3r', 'xsstrike', 'blue_hydra'}
+        apt_tools = {'nmap', 'sqlmap', 'nikto', 'whatweb', 'wifite', 'tcpdump', 'tshark', 'aircrack-ng', 'reaver'}
+        
+        if tool_name in pip_tools:
+            return f"pip install {tool_name.replace('-', '_')}"
+        elif tool_name in apt_tools:
+            return "sudo apt install " + ('aircrack-ng' if tool_name in ('airodump-ng', 'aircrack-ng') else tool_name)
+        elif tool_name == 'theharvester':
+            return "sudo apt install theharvester  # or: git clone https://github.com/laramies/theHarvester.git"
+        elif tool_name == 'subfinder':
+            return "sudo apt install subfinder  # or: go install github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest"
+        elif tool_name == 'hashcat':
+            return "sudo apt install hashcat  # or: https://hashcat.net/hashcat/"
+        elif tool_name in ('autopsy', 'sleuthkit'):
+            return "sudo apt install sleuthkit  # or: https://www.sleuthkit.org/autopsy/download.php"
+        else:
+            return f"https://github.com/search?q={tool_name}"
     
     def install_missing_tools(self, tool_category: str) -> bool:
         """
-        Install all missing tools for a category
+        Show installation guide for missing tools (auto-install removed for security)
         
         Args:
             tool_category: Category of tools to install
             
         Returns:
-            True if all tools were successfully installed, False otherwise
+            Always returns False (user must install manually)
         """
         missing_tools = self.get_missing_tools(tool_category)
         
@@ -202,28 +185,12 @@ class DependencyManager:
             self.console.print(f"[bold green]✓ All required tools for {tool_category} are already installed![/bold green]")
             return True
         
-        self.console.print(f"[bold yellow]Installing missing tools for {tool_category}:[/bold yellow]")
-        
-        installed_count = 0
+        self.console.print(f"[bold yellow]To install missing tools for {tool_category}, run:[/bold yellow]")
         for tool in missing_tools:
-            self.console.print(f"[cyan]Installing {tool}...[/cyan]")
-            success = self.install_tool(tool)
-            if success:
-                self.console.print(f"[bold green]✓ {tool} installed successfully[/bold green]")
-                installed_count += 1
-            else:
-                self.console.print(f"[bold red]✗ Failed to install {tool}[/bold red]")
+            self.console.print(f"  [cyan]{tool}:[/cyan] {self.get_tool_url(tool)}")
         
-        self.console.print(f"[bold]Installation complete: {installed_count}/{len(missing_tools)} tools installed[/bold]")
-        
-        # Re-check to see if any tools are still missing
-        still_missing = self.get_missing_tools(tool_category)
-        if still_missing:
-            self.console.print(f"[yellow]Still missing tools: {', '.join(still_missing)}[/yellow]")
-            return False
-        else:
-            self.console.print(f"[bold green]✓ All tools for {tool_category} are now installed![/bold green]")
-            return True
+        self.console.print("[yellow]Auto-install is disabled for security. Please install manually.[/yellow]")
+        return False
     
     def check_all_dependencies(self) -> Dict[str, List[str]]:
         """
