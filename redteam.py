@@ -10,7 +10,6 @@ import os
 import hashlib
 import base64
 import urllib.parse
-from typing import Optional
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
@@ -18,8 +17,6 @@ from rich.columns import Columns
 from rich.syntax import Syntax
 from rich.markdown import Markdown
 from rich.progress import Progress, SpinnerColumn, TextColumn
-from rich.layout import Layout
-from rich.live import Live
 from rich.text import Text
 from rich.prompt import Prompt
 from rich import box
@@ -33,9 +30,6 @@ from tools.forensics import ForensicsTools
 from tools.reporting import ReportingModule
 from tools.misc_utils import MiscUtilities
 from tools.dependency_manager import get_dependency_manager
-from tools.malware_analysis import MalwareAnalysisTools
-from tools.reverse_engineering import ReverseEngineeringTools
-from tools.cryptography_tools import CryptographyTools
 from tools.base_tool import URL_PATTERN, DOMAIN_PATTERN, BaseTool
 
 S = {
@@ -82,12 +76,6 @@ def paginate(console: Console, items: list, page_size: int = 10) -> None:
                 break
 
 
-def run_with_spinner(console: Console, description: str, func, *args, **kwargs):
-    with Progress(SpinnerColumn(), TextColumn(f"[cyan]{{task.description}}[/cyan]"), console=console, transient=True) as p:
-        p.add_task(description, total=None)
-        return func(*args, **kwargs)
-
-
 def show_menu_table(console: Console, title: str, options: list[tuple[str, str, str]]) -> str:
     table = Table(
         title=f"[{S['title']}]{title}[/{S['title']}]",
@@ -104,8 +92,6 @@ def show_menu_table(console: Console, title: str, options: list[tuple[str, str, 
     console.print(table)
     choices = [o[0] for o in options]
     choice = Prompt.ask("Choose an option", choices=choices)
-    if choice.lower() in SHORTCUTS:
-        return SHORTCUTS[choice.lower()]
     return choice
 
 
@@ -121,9 +107,6 @@ class RedTeamTerminal:
         self.reporting = ReportingModule(console)
         self.misc_utils = MiscUtilities(console)
         self.dependency_manager = get_dependency_manager(console)
-        self.malware_analysis = MalwareAnalysisTools(console)
-        self.reverse_engineering = ReverseEngineeringTools(console)
-        self.cryptography_tools = CryptographyTools(console)
 
     def display_banner(self) -> None:
         banner_text = Text("ShadowNetOps", style=S["title"])
@@ -185,7 +168,7 @@ class RedTeamTerminal:
             self.console.print(f"\n[{S['success']}] All required tools for {category} are installed![/{S['success']}]")
             return True
 
-    def _subprocess_run(self, cmd_args: list, timeout: int | None = None, spinner_text: str = "Running..."):
+    def _subprocess_run(self, cmd_args: list, timeout: int = 60, spinner_text: str = "Running..."):
         with Progress(SpinnerColumn(), TextColumn(f"[cyan]{{task.description}}[/cyan]"), console=self.console, transient=True) as p:
             p.add_task(spinner_text, total=None)
             return subprocess.run(cmd_args, capture_output=True, text=True, timeout=timeout)
