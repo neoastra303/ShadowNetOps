@@ -1,158 +1,141 @@
+<p align="center">
+  <img src="https://img.shields.io/badge/ShadowNetOps-v2.1.0-00d4ff?style=for-the-badge&logo=python&logoColor=white"/>
+  <img src="https://img.shields.io/badge/license-MIT-00d4ff?style=for-the-badge"/>
+  <img src="https://img.shields.io/github/stars/neoastra303/ShadowNetOps?style=for-the-badge&color=00d4ff"/>
+  <img src="https://img.shields.io/badge/python-3.8%2B-00d4ff?style=for-the-badge&logo=python&logoColor=white"/>
+</p>
 
-# ShadowNetOps
-
-**Advanced Network Security Operations & Red Teaming Platform**
-
-Transform your cybersecurity assessments with our comprehensive suite of professional-grade tools designed for security professionals, penetration testers, and red team operators.
-
-## 🌟 Key Features
-
-### 🔍 All-in-One Security Platform
-- **Network Intelligence**: Advanced reconnaissance with port scanning, host discovery, and service fingerprinting
-- **Vulnerability Detection**: Comprehensive CVE checking and configuration analysis with SSL/TLS evaluation
-- **Web Application Security**: Cutting-edge SQLi/XSS testing, subdomain enumeration, and technology stack analysis
-- **Open Source Intelligence (OSINT)**: Powerful email/user validation, WHOIS/DNS lookup, and social media profiling
-- **Wireless Security**: Expert WiFi/Bluetooth analysis, handshake capture, and protocol evaluation
-- **Digital Forensics**: In-depth disk/memory analysis, timeline reconstruction, and artifact hunting
-- **Malware Analysis**: Advanced static/dynamic analysis, YARA rules, and PE analysis capabilities
-- **Reverse Engineering**: Precise disassembly, decompilation, and binary analysis tools
-- **Cryptographic Utilities**: Complete hash calculation, encryption/decryption, and certificate analysis
-
-### 🛡️ Professional-Grade Security Controls
-- **Authorization Verification**: Multi-tier consent validation system
-- **Comprehensive Logging**: Advanced audit trails for compliance and accountability
-- **Dependency Management**: Automatic validation of assessment tools and requirements
-- **Scope Management**: Granular control over assessment parameters and boundaries
-
-### 🧩 Modular Architecture
-- **Plug-and-Play Modules**: Extensible plugin system for custom tool integration
-- **Consistent Experience**: Unified interface across all security modules
-- **Customizable Workflows**: Flexible assessment parameters for diverse scenarios
-- **Integrated Reporting**: Professional-grade findings export and documentation
-
-## 🚀 Quick Start
-
-### System Requirements
-- **Python 3.8+** for optimal performance
-- **Git** for version control
-- **pip** package manager
-
-### Installation Process
-*Get operational in under 5 minutes with our streamlined setup:*
-
-```bash
-# Clone the ShadowNetOps repository
-git clone https://github.com/neoastra303/ShadowNetOps.git
-cd ShadowNetOps
-
-# Install all dependencies with one command
-pip install -r requirements.txt
-```
-
-### Launch Your Security Platform
-```bash
-python redteam.py
-```
-
-*You're now ready to leverage the most comprehensive security testing platform in the industry.*
-
-## 🛡️ Ethical Use & Legal Compliance
-
-### ⚡ Mission Critical Notice
-
-ShadowNetOps is engineered exclusively for:
-
-- **Authorized** penetration testing and security assessments
-- Educational environments and security training programs
-- Security research in controlled, permitted environments
-- Professional vulnerability assessments with explicit consent
-
-### 📜 Legal Compliance Framework
-
-**Strict authorization is mandatory before deployment on any system. Unauthorized use may violate federal and international computer fraud laws.**
-
-### 🎯 Professional Responsibility Standards
-
-- Secure written authorization before any assessment activity
-- Maintain explicit consent documentation for all operations
-- Practice responsible vulnerability disclosure protocols
-- Comply with jurisdictional laws and regulations
-- Operate exclusively within authorized testing parameters
-- Respect data privacy and protection standards
-
-### ✅ Built-in Compliance Verification
-
-ShadowNetOps includes consent validation mechanisms to reinforce the critical importance of proper authorization. As the operator, you maintain full legal and ethical responsibility to verify authorization before deployment.
-
-**By accessing this platform, you confirm understanding and agreement with the complete legal framework in [LEGAL_DISCLAIMER.md](LEGAL_DISCLAIMER.md).**
-
-## 🎯 Unparalleled Security Intelligence
-
-### Streamlined Assessment Workflow
-1. **Initialize**: Execute `python redteam.py` for instant platform access
-2. **Navigate**: Access 10+ specialized assessment domains with intuitive interface
-3. **Configure**: Customize targets and parameters with precision controls
-4. **Execute**: Deploy advanced automated security testing algorithms
-5. **Analyze**: Access comprehensive real-time results with actionable insights
-6. **Document**: Generate professional-grade reports and compliance documentation
-
-*Transform hours of manual work into minutes of automated excellence.*
-
-## 🏗️ Advanced Architecture
-
-### Professional Codebase Structure
-```
-ShadowNetOps/
-├── redteam.py                  # Centralized platform entry point
-├── config.ini                  # Dynamic configuration engine
-├── config_manager.py          # Intelligent configuration management
-├── requirements.txt           # Optimized dependency framework
-├── LEGAL_DISCLAIMER.md        # Compliance and legal framework
-├── DOCUMENTATION.md           # Complete technical reference
-├── README.md                  # Executive platform overview
-├── tools/                     # Specialized security modules
-│   ├── __init__.py            # Modular initialization system
-│   ├── base_tool.py           # Standardized tool interface
-│   ├── network_recon.py       # Advanced network intelligence
-│   ├── vuln_scanner.py        # Automated vulnerability detection
-│   ├── password_tester.py     # Sophisticated password analysis
-│   ├── osint_tools.py         # Open-source intelligence collection
-│   ├── dependency_manager.py  # Automated requirements validation
-│   ├── social_engineering.py  # Human-factor assessment tools
-│   ├── forensics.py           # Digital forensics analysis
-│   ├── malware_analysis.py    # Malware behavior analysis
-│   ├── reverse_engineering.py # Binary analysis and reverse engineering
-│   ├── cryptography_tools.py  # Cryptographic security utilities
-│   ├── reporting.py           # Professional reporting engine
-│   └── misc_utils.py          # Supporting utility functions
-└── ...
-```
-
-*Built with industry-leading architecture for maximum extensibility and maintainability.*
-
-## 🤝 Join the Security Innovation
-
-### Contribution Guidelines
-We welcome security professionals and developers to enhance ShadowNetOps:
-
-1. **Fork** the repository to begin your contribution
-2. **Branch** with `git checkout -b feature/InnovativeFeature`
-3. **Commit** your improvements with `git commit -m 'Enhance platform capabilities'`
-4. **Push** your branch with `git push origin feature/InnovativeFeature`
-5. **Submit** a Pull Request for community review
-
-*Together we strengthen global cybersecurity defenses.*
-
-## 📄 Open Source License
-
-ShadowNetOps operates under the MIT License - comprehensive details in the [LICENSE](LICENSE) file.
-
-## 📞 Professional Support
-
-- 📧 **Technical Queries**: security@shadownetops.com
-- 🐙 **Repository**: [github.com/neoastra303/ShadowNetOps](https://github.com/neoastra303/ShadowNetOps)
-- 🌐 **Project Updates**: Follow our security research initiatives
+<h1 align="center">⚡ ShadowNetOps ⚡</h1>
+<p align="center"><b>Advanced Network Security Operations & Red Teaming Platform</b></p>
+<p align="center">A cyberpunk-themed CLI suite with 14 integrated security modules for reconnaissance, exploitation analysis, forensics, and reporting.</p>
 
 ---
 
-*ShadowNetOps: Empowering authorized security professionals with cutting-edge assessment capabilities. All operations require explicit authorization and legal compliance in your jurisdiction.*
+## 🚀 Quick Start
+
+```bash
+git clone https://github.com/neoastra303/ShadowNetOps.git
+cd ShadowNetOps
+pip install -r requirements.txt
+python redteam.py
+```
+
+**Requires:** Python 3.8+
+
+---
+
+## 📋 Menu Overview
+
+```
+┌═══ Available Tools & Categories ═══┐
+│  1. Network Reconnaissance          │   8. Miscellaneous Utilities
+│  2. Vulnerability Assessment        │   9. Web Attack Tools
+│  3. Password Strength Tester        │  10. Wireless Attack Tools
+│  4. OSINT Tools                     │  11. Malware Analysis
+│  5. Social Engineering Toolkit      │  12. Reverse Engineering
+│  6. Forensics                       │  13. Cryptography Tools
+│  7. Reporting                       │  14. Exit
+└─────────────────────────────────────┘
+Shortcuts: [q]=quit  [b]=back
+shadow@netops ~$
+```
+
+---
+
+## 🧩 Module Reference
+
+| #   | Module                         | Key Capabilities                                                                                                                      |
+| --- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | **Network Reconnaissance**     | Port scanning, host discovery, service detection, OS fingerprinting, traceroute, DNS enum                                             |
+| 2   | **Vulnerability Assessment**   | CVE scanning, nmap NSE scripts, SSL/TLS analysis, Nikto web scanning, config checks                                                   |
+| 3   | **Password Strength Tester**   | Entropy calc, crack time estimation, pattern detection, char set analysis, dictionary check                                           |
+| 4   | **OSINT Tools**                | holehe (email), h8mail (breach), sherlock (username), theHarvester (domain/IP)                                                        |
+| 5   | **Social Engineering Toolkit** | Phishing simulation, pretexting, impersonation, credential harvesting, spear phishing                                                 |
+| 6   | **Forensics**                  | Disk/memory analysis, artifact search, file hashing, network forensics, registry/timeline/log analysis                                |
+| 7   | **Reporting**                  | Executive summary, PDF/JSON/CSV export                                                                                                |
+| 8   | **Misc Utilities**             | Hash calculator, Base64 encoder/decoder, random password generator                                                                    |
+| 9   | **Web Attack Tools**           | SQLMap (SQLi), XSStrike (XSS), CSRF PoC, ffuf (fuzzing), Nikto, subfinder, whatweb, header analysis, Wayback Machine                  |
+| 10  | **Wireless Attack Tools**      | airodump-ng (scan/capture), hashcat (WPA), blue_hydra, wifite, aireplay-ng (deauth), reaver (WPS)                                     |
+| 11  | **Malware Analysis**           | Static/dynamic analysis, YARA scanning, PE header analysis, tcpdump capture, volatility hints                                         |
+| 12  | **Reverse Engineering**        | objdump disassembly, GDB debugging, hex dump, XOR decryption, UPX detection                                                           |
+| 13  | **Cryptography Tools**         | Hash calculator (MD5/SHA1/SHA256), AES-256 encrypt/decrypt, Base64/Hex/URL encode, SSL cert check, RSA/AES keygen, digital signatures |
+| 14  | **Exit**                       | Quit the terminal                                                                                                                     |
+
+---
+
+## ⌨️ Shortcuts
+
+| Key          | Action                    |
+| ------------ | ------------------------- |
+| `q` / `quit` | Exit from anywhere        |
+| `b` / `back` | Return to main menu       |
+| `<Enter>`    | Refresh menu              |
+| `y` / `n`    | Pagination (more results) |
+
+---
+
+## 🎨 CLI Features
+
+- **2-column menu layout** — faster navigation via `rich.Columns`
+- **Syntax highlighting** — command output colored with `rich.Syntax` (monokai)
+- **Live spinners** — `rich.progress.Progress` wraps every subprocess call
+- **Pagination** — long result sets show "More? (y/n)"
+- **Markdown help** — `rich.markdown.Markdown` for info screens
+- **Theme system** — centralized `S` dict for one-line color changes
+
+---
+
+## 🏗️ Architecture
+
+```
+ShadowNetOps/
+├── redteam.py                 # Main entry point (770 lines)
+├── config.ini                 # Runtime configuration
+├── config_manager.py          # Config parser + defaults
+├── requirements.txt           # Dependencies
+├── tools/                     # 13 modular tool packages
+│   ├── base_tool.py           # Abstract base with validators
+│   ├── network_recon.py
+│   ├── vuln_scanner.py
+│   ├── password_tester.py
+│   ├── osint_tools.py
+│   ├── social_engineering.py
+│   ├── forensics.py
+│   ├── reporting.py
+│   ├── misc_utils.py
+│   ├── dependency_manager.py
+│   ├── malware_analysis.py
+│   ├── reverse_engineering.py
+│   └── cryptography_tools.py
+├── tests/                     # 23 unit tests (pytest)
+│   ├── test_base_tool.py
+│   ├── test_config_manager.py
+│   └── test_imports.py
+├── .github/workflows/         # CI (Python 3.10-3.12)
+└── docs/                      # Documentation
+```
+
+---
+
+## 🧪 Testing
+
+```bash
+pip install pytest
+python -m pytest tests/ -v
+```
+
+---
+
+## ⚖️ Legal & Ethical Use
+
+This tool is for **authorized security testing only**. Unauthorized use may violate computer fraud laws. See [LEGAL_DISCLAIMER.md](LEGAL_DISCLAIMER.md) for full terms.
+
+---
+
+## 📄 License
+
+MIT — see [LICENSE](LICENSE).
+
+---
+
+<p align="center"><i>ShadowNetOps — Empowering authorized security professionals.</i></p>
