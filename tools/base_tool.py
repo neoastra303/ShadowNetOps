@@ -6,6 +6,20 @@ import re
 from abc import ABC, abstractmethod
 from rich.console import Console
 from typing import Optional
+import questionary
+from questionary import Style
+
+
+CYBER_STYLE = Style([
+    ("qmark", "fg:ansicyan bold"),
+    ("question", "bold"),
+    ("pointer", "fg:ansicyan bold"),
+    ("highlighted", "fg:ansicyan bold"),
+    ("selected", "fg:ansigreen bold"),
+    ("separator", "fg:ansicyan"),
+    ("instruction", "fg:ansiwhite"),
+    ("answer", "fg:ansigreen bold"),
+])
 
 
 URL_PATTERN = re.compile(
