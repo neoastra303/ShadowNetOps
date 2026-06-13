@@ -5,3 +5,4 @@ rich>=14.2.0
 configparser>=6.0.0
 python-magic>=0.4.27
 pycryptodome>=3.21.0
+pytest>=8.0.0
