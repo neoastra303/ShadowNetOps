@@ -395,12 +395,11 @@ class ShadowNetOps:
             ("9", "WiFi Phishing Portal", "Create captive portal for credential harvesting"),
             ("10", "PMKID Capture", "Capture PMKID for offline cracking"),
             ("11", "WPS PIN Attack", "Bruteforce WPS PINs (reaver)"),
-            ("12", "WiFi Signal Jammer", "Jam WiFi signals in range"),
             ("b", "Back", "Return to main menu"),
         ])
         if choice == "b":
             return
-        if choice in ("1", "2", "5", "7", "10", "11", "12"):
+        if choice in ("1", "2", "5", "7", "10", "11"):
             interface = qtext("Enter wireless interface", default="wlan0")
             if not interface:
                 return
@@ -465,8 +464,6 @@ class ShadowNetOps:
                 self.console.print(Syntax(result.stdout, "text", theme="monokai") if result.stdout else f"[{S['warning']}]No output.[/{S['warning']}]")
             except Exception as e:
                 self._handle_subprocess_error(e, "reaver")
-        elif choice == "12":
-            self.console.print(f"[{S['error']}]WARNING: Signal jamming may be illegal in your jurisdiction![/{S['error']}]")
 
     def malware_analysis_menu(self) -> None:
         choice = show_menu_table(self.console, "Malware Analysis Tools", [
