@@ -248,3 +248,7 @@ dist/
 build/
 out/
 .DS_Store
+
+# Application runtime
+logs/
+reports/
