@@ -32,14 +32,14 @@ from tools.dependency_manager import get_dependency_manager
 from tools.base_tool import URL_PATTERN, DOMAIN_PATTERN, BaseTool
 
 S = {
-    "title": "bold cyan",
-    "header": "bold magenta",
-    "success": "bold green",
-    "warning": "bold yellow",
-    "error": "bold red",
-    "info": "cyan",
-    "dim": "dim",
-    "accent": "bold cyan",
+    "title": "bold #38bdf8",
+    "header": "bold #c084fc",
+    "success": "bold #4ade80",
+    "warning": "bold #fbbf24",
+    "error": "bold #fb7185",
+    "info": "#38bdf8",
+    "dim": "dim #64748b",
+    "accent": "bold #818cf8",
     "label": "bold",
 }
 
@@ -61,14 +61,14 @@ MAIN_MENU_ITEMS = [
 ]
 
 CYBER_STYLE = Style([
-    ("qmark", "fg:ansicyan bold"),
-    ("question", "bold"),
-    ("pointer", "fg:ansicyan bold"),
-    ("highlighted", "fg:ansicyan bold"),
-    ("selected", "fg:ansigreen bold"),
-    ("separator", "fg:ansicyan"),
-    ("instruction", "fg:ansiwhite"),
-    ("answer", "fg:ansigreen bold"),
+    ("qmark", "bold"),
+    ("question", "bold #94a3b8"),
+    ("pointer", "bold #38bdf8"),
+    ("highlighted", "bold #38bdf8"),
+    ("selected", "bold #4ade80"),
+    ("separator", "#475569"),
+    ("instruction", "#64748b"),
+    ("answer", "bold #4ade80"),
 ])
 
 console = Console()
@@ -139,18 +139,29 @@ class ShadowNetOps:
         self.dependency_manager = get_dependency_manager(console)
 
     def display_banner(self) -> None:
-        banner_text = Text("ShadowNetOps", style=S["title"])
-        banner_text.stylize("bold magenta", 0, 6)
-        subtitle = (
-            "Terminal v2.1.0  |  Cybersecurity Operations Platform\n"
-            "Network Recon  |  Vuln Assessment  |  Password Testing  |  OSINT"
-        )
+        logo = Text("""
+        ███████╗██╗  ██╗ █████╗ ██████╗  ██████╗ ██╗    ██╗
+        ██╔════╝██║  ██║██╔══██╗██╔══██╗██╔═══██╗██║    ██║
+        ███████╗███████║███████║██║  ██║██║   ██║██║ █╗ ██║
+        ╚════██║██╔══██║██╔══██║██║  ██║██║   ██║██║███╗██║
+        ███████║██║  ██║██║  ██║██████╔╝╚██████╔╝╚███╔███╔╝
+        ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═════╝  ╚═════╝  ╚══╝╚══╝
+""", style="#38bdf8")
         panel = Panel(
-            Text(subtitle, justify="center"),
-            title=banner_text,
-            border_style="cyan",
-            box=box.DOUBLE,
-            padding=(1, 4),
+            Text.assemble(
+                ("\n", ""),
+                logo,
+                ("\n", ""),
+                (Text("Cybersecurity Operations Platform", style="#94a3b8"), ""),
+                ("   ", ""),
+                (Text("v2.1.0", style="bold #c084fc"), ""),
+                ("\n\n", ""),
+            ),
+            title=Text(" ShadowNetOps ", style="bold #38bdf8"),
+            subtitle=Text(" Network Recon · Vuln Assessment · OSINT · Forensics · Crypto ", style="#64748b"),
+            border_style="#c084fc",
+            box=box.ROUNDED,
+            padding=(0, 4),
         )
         self.console.print(panel)
         self.console.print()
