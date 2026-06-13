@@ -2,7 +2,7 @@
 
 ## Supported Versions
 
-We provide security updates for the following versions of RedTeam Terminal:
+We provide security updates for the following versions of ShadowNetOps:
 
 | Version | Supported              |
 | ------- | ---------------------- |
@@ -12,11 +12,11 @@ We provide security updates for the following versions of RedTeam Terminal:
 
 ## Reporting a Vulnerability
 
-We take the security of RedTeam Terminal seriously. If you believe you have found a security vulnerability in our software, please follow these steps:
+We take the security of ShadowNetOps seriously. If you believe you have found a security vulnerability in our software, please follow these steps:
 
 ### Before Reporting
 
-- Ensure you are using the latest version of RedTeam Terminal
+- Ensure you are using the latest version of ShadowNetOps
 - Check our [issues](https://github.com/neoastra303/ShadowNetOps/issues) to see if the vulnerability has already been reported
 - Do not report security vulnerabilities through public GitHub issues
 
@@ -24,7 +24,7 @@ We take the security of RedTeam Terminal seriously. If you believe you have foun
 
 To report a security vulnerability, please contact our security team directly:
 
-- Email: security@redteam-terminal.com
+- Email: security@shadow-netops.io
 - PGP Key: Available upon request for encrypted communication
 - Response Time: We will acknowledge your report within 48 hours
 
@@ -36,7 +36,7 @@ When reporting a vulnerability, please include the following information:
 - Steps to reproduce the issue
 - Potential impact of the vulnerability
 - Your name/handle for acknowledgments (optional)
-- Affected version(s) of RedTeam Terminal
+- Affected version(s) of ShadowNetOps
 
 ### What to Expect
 
@@ -49,19 +49,19 @@ When reporting a vulnerability, please include the following information:
 
 This security policy applies to:
 
-- The RedTeam Terminal application and its components
+- The ShadowNetOps application and its components
 - Official distribution packages
 - Documentation and examples
 
 This policy does NOT cover:
 
-- Third-party tools that RedTeam Terminal integrates with
+- Third-party tools that ShadowNetOps integrates with
 - Custom modifications to the software
 - Misconfigurations by users
 
 ## Security Best Practices
 
-When using RedTeam Terminal, we recommend:
+When using ShadowNetOps, we recommend:
 
 - Keep the application updated to the latest version
 - Only run on systems you own or have explicit permission to test
@@ -84,4 +84,4 @@ Currently, we do not have a formal bug bounty program. However, we appreciate re
 
 ## Questions
 
-If you have questions about this security policy, please contact us at security@redteam-terminal.com
+If you have questions about this security policy, please contact us at security@shadow-netops.io

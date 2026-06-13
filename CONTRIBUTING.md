@@ -111,4 +111,4 @@ If you have questions about contributing, feel free to:
 - Start a discussion in the [Discussions](https://github.com/neoastra303/ShadowNetOps/discussions) tab
 - Join our community (when available)
 
-Thank you for contributing to RedTeam Terminal!
+Thank you for contributing to ShadowNetOps!
