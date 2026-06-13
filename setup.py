@@ -22,7 +22,7 @@ setup(
     description='A comprehensive cybersecurity assessment platform featuring multiple security testing modules for network, web application, wireless, and digital forensics domains.',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url='https://github.com/your-username/redteam-terminal',
+    url='https://github.com/neoastra303/ShadowNetOps',
     packages=find_packages(),
     classifiers=[
         'Development Status :: 5 - Production/Stable',
@@ -53,8 +53,8 @@ setup(
     },
     keywords='security, penetration-testing, osint, cybersecurity, red-team, vulnerability-assessment, forensics',
     project_urls={
-        'Documentation': 'https://github.com/your-username/redteam-terminal#readme',
-        'Source': 'https://github.com/your-username/redteam-terminal',
-        'Tracker': 'https://github.com/your-username/redteam-terminal/issues',
+        'Documentation': 'https://github.com/neoastra303/ShadowNetOps#readme',
+        'Source': 'https://github.com/neoastra303/ShadowNetOps',
+        'Tracker': 'https://github.com/neoastra303/ShadowNetOps/issues',
     },
 )

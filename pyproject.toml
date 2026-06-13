@@ -1,8 +1,8 @@
 [project]
-name = "repl-nix-workspace"
-version = "0.1.0"
-description = "Add your description here"
-requires-python = ">=3.11"
+name = "shadow-netops"
+version = "2.1.0"
+description = "A comprehensive cybersecurity assessment platform featuring multiple security testing modules for network, web application, wireless, and digital forensics domains."
+requires-python = ">=3.8"
 dependencies = [
     "colorama>=0.4.6",
     "pyfiglet>=1.0.4",
@@ -11,3 +11,17 @@ dependencies = [
     "python-magic>=0.4.27",
     "pycryptodome>=3.21.0",
 ]
+
+[project.urls]
+Homepage = "https://github.com/neoastra303/ShadowNetOps"
+Documentation = "https://github.com/neoastra303/ShadowNetOps#readme"
+Repository = "https://github.com/neoastra303/ShadowNetOps"
+Issues = "https://github.com/neoastra303/ShadowNetOps/issues"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
